@@ -1,0 +1,33 @@
+{% extends "users/base.html" %}
+{% block content %}
+    <form action="{% url 'login' %}" method="POST">
+        {% csrf_token %}
+
+        <!-- Username input -->
+        <div class="form-outline mb-4">
+            <input type="text" id="username" name="username" class="form-control" placeholder="Username"/>
+            <label class="form-label" for="username"></label>
+        </div>
+
+        <!-- Password input -->
+        <div class="form-outline mb-4">
+            <input type="password" id="password" name="password" class="form-control" placeholder="Password"/>
+            <label class="form-label" for="password"></label>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col">
+                <!-- Simple link -->
+                <a href="#">Forgot password?</a>
+            </div>
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
+
+        <!-- Register buttons -->
+        <div class="text-center">
+            <p>Not a member? <a href="{% url 'register' %}">Register</a></p>
+        </div>
+    </form>
+{% endblock content %}
