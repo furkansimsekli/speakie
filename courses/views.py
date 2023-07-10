@@ -1,6 +1,8 @@
-from django.shortcuts import render
 from django.contrib import messages
+from django.shortcuts import render
 from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 from .models import Course, TranslationPractice
 
 
@@ -20,7 +22,7 @@ class PracticeListView(View):
         return render(request, 'courses/practice_list.html', context)
 
 
-class PracticeView(View):
+class PracticeView(LoginRequiredMixin, View):
     def get(self, request, course_id, practice_id):
         practice = TranslationPractice.objects.filter(id=practice_id).first()
         context = {
@@ -30,7 +32,6 @@ class PracticeView(View):
 
     def post(self, request, course_id, practice_id):
         practice = TranslationPractice.objects.filter(id=practice_id).first()
-
         context = {
             'practice': practice
         }
