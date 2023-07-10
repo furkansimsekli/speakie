@@ -1,26 +1,9 @@
 {% extends "users/base.html" %}
+{% load crispy_forms_filters %}
 {% block content %}
     <form action="{% url 'login' %}" method="POST">
         {% csrf_token %}
-
-        <!-- Username input -->
-        <div class="form-outline mb-4">
-            <input type="text" id="username" name="username" class="form-control" placeholder="Username"/>
-            <label class="form-label" for="username"></label>
-        </div>
-
-        <!-- Password input -->
-        <div class="form-outline mb-4">
-            <input type="password" id="password" name="password" class="form-control" placeholder="Password"/>
-            <label class="form-label" for="password"></label>
-        </div>
-
-        <div class="row mb-4">
-            <div class="col">
-                <!-- Simple link -->
-                <a href="#">Forgot password?</a>
-            </div>
-        </div>
+        {{ form | crispy }}
 
         <!-- Submit button -->
         <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>

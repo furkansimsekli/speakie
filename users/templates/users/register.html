@@ -1,43 +1,10 @@
 {% extends "users/base.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
 {% block content %}
     <form action="{% url 'register' %}" method="POST">
         {% csrf_token %}
-
-        <!-- First name input -->
-        <div class="form-outline mb-4">
-            <input type="text" id="first_name" name="first_name" class="form-control" placeholder="First name" required/>
-            <label class="form-label" for="first_name"></label>
-        </div>
-
-        <!-- Last name input -->
-        <div class="form-outline mb-4">
-            <input type="text" id="last_name" name="last_name" class="form-control" placeholder="Last name" required/>
-            <label class="form-label" for="last_name"></label>
-        </div>
-
-        <!-- Username input -->
-        <div class="form-outline mb-4">
-            <input type="text" id="username" name="username" class="form-control" placeholder="Username" required/>
-            <label class="form-label" for="username"></label>
-        </div>
-
-        <!-- Email input -->
-        <div class="form-outline mb-4">
-            <input type="email" id="email" name="email" class="form-control" placeholder="Email" required/>
-            <label class="form-label" for="email"></label>
-        </div>
-
-        <!-- Password1 input -->
-        <div class="form-outline mb-4">
-            <input type="password" id="password1" name="password1" class="form-control" placeholder="Password" required/>
-            <label class="form-label" for="password1"></label>
-        </div>
-
-        <!-- Password2 input -->
-        <div class="form-outline mb-4">
-            <input type="password" id="password2" name="password2"  class="form-control" placeholder="Re-type password" required/>
-            <label class="form-label" for="password2"></label>
-        </div>
+        {{ form | crispy }}
 
         <!-- Submit button -->
         <button type="submit" class="btn btn-primary btn-block mb-4">Join Free!</button>
