@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.views import View
 from users.forms import UserRegisterForm, LoginForm
@@ -14,6 +15,7 @@ class RegistrationView(View):
 
         if form.is_valid():
             form.save()
+            messages.success(request, 'Yeyyy! You successfully joined to Speakie!')
             return redirect('login')
 
         return render(request, 'users/register.html', {'form': form})
@@ -30,12 +32,14 @@ class LoginView(View):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user = authenticate(request, username=username, password=password)
-            print(user)
 
             if user is not None:
                 login(request, user)
+                messages.success(request, 'Login successful!')
                 return redirect('home')
 
+        messages.warning(request,
+                         'Given username or password does not belong to a user, please make sure they are correct!')
         return render(request, 'users/login.html', {'form': form})
 
 
