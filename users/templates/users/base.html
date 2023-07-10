@@ -52,6 +52,15 @@
 <main role="main" class="container align-items-center">
     <div class="row align-items-center">
         <div class="col align-items-center">
+            <div class="col-md-8">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
             {% block content %}{% endblock %}
         </div>
     </div>

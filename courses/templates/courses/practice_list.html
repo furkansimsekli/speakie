@@ -1,0 +1,9 @@
+{% extends "users/base.html" %}
+{% block content %}
+    <h2>Wonderful Practices</h2>
+    <ul>
+    {% for tp in translation_practices %}
+        <li><a href="{% url 'practice' tp.course.id tp.id %}">{{ tp.question }}</a></li>
+    {% endfor %}
+    </ul>
+{% endblock content %}
