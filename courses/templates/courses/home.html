@@ -1,9 +1,20 @@
 {% extends "users/base.html" %}
 {% block content %}
     <h2>Available Courses</h2>
-    <ul>
-        {% for course in courses %}
-            <li><a href="{% url 'practice-list' course.id %}">{{ course.name }}</a></li>
-        {% endfor %}
-    </ul>
+    <div class="container">
+        <div class="row justify-content-center">
+            {% for course in courses %}
+                <div class="col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <img src="{{ course.flag.url }}" class="card-img-top" alt="">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ course.name }}</h5>
+                            <p class="card-text">Lorem ipsum...</p>
+                            <a href="{% url 'practice-list' course.id %}" class="btn btn-primary">Practices</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock content %}

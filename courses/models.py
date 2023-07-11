@@ -3,6 +3,7 @@ from django.db import models
 
 class Course(models.Model):
     name = models.CharField(max_length=32)
+    flag = models.ImageField(default='default_flag_pic.jpg', upload_to='flag_pictures')
 
     def __str__(self):
         return self.name
