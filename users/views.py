@@ -2,7 +2,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.views import View
-from users.forms import UserRegisterForm, LoginForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+from users.forms import UserRegisterForm, LoginForm, UserUpdateForm
 
 
 class RegistrationView(View):
@@ -47,3 +49,32 @@ class LogoutView(View):
     def get(self, request):
         logout(request)
         return redirect('home')
+
+
+class ProfileView(LoginRequiredMixin, View):
+    def get(self, request):
+        u_form = UserUpdateForm(instance=request.user)
+
+        context = {
+            'u_form': u_form,
+        }
+
+        return render(request, 'users/profile.html', context)
+
+    def post(self, request):
+        if request.method == 'POST':
+            u_form = UserUpdateForm(request.POST, instance=request.user)
+
+            if u_form.is_valid():
+                u_form.save()
+                messages.success(request, f'Your account has been updated!')
+                return redirect('profile')
+
+        else:
+            u_form = UserUpdateForm(instance=request.user)
+
+        context = {
+            'u_form': u_form,
+        }
+
+        return render(request, 'users/profile.html', context)

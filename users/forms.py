@@ -19,4 +19,20 @@ class UserRegisterForm(UserCreationForm):
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='Username')
-    password = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password = forms.CharField(label='Password', widget=forms.PasswordInput)    # TODO: use PasswordInput
+
+
+class UserUpdateForm(forms.ModelForm):
+    first_name = forms.CharField(max_length=64)
+    last_name = forms.CharField(max_length=64)
+    email = forms.EmailField()
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'username', 'email']
+
+
+"""class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['image']"""
