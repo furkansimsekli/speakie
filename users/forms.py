@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from .models import Profile
 
 
 class UserRegisterForm(UserCreationForm):
@@ -19,7 +20,7 @@ class UserRegisterForm(UserCreationForm):
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='Username')
-    password = forms.CharField(label='Password', widget=forms.PasswordInput)    # TODO: use PasswordInput
+    password = forms.CharField(label='Password', widget=forms.PasswordInput)  # TODO: use PasswordInput
 
 
 class UserUpdateForm(forms.ModelForm):
@@ -32,7 +33,7 @@ class UserUpdateForm(forms.ModelForm):
         fields = ['first_name', 'last_name', 'username', 'email']
 
 
-"""class ProfileUpdateForm(forms.ModelForm):
+class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['image']"""
+        fields = ['profile_picture']
