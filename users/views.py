@@ -5,9 +5,10 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from users.forms import UserRegisterForm, LoginForm, UserUpdateForm
+from .models import Profile, Student, Moderator
 
 
-class RegistrationView(View):
+class StudentRegisterView(View):
     def get(self, request):
         form = UserRegisterForm()
         return render(request, 'users/register.html', {'form': form})
@@ -16,11 +17,43 @@ class RegistrationView(View):
         form = UserRegisterForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            user = form.save()
+
+            profile = Profile(user=user)  # TODO: use signals?
+            profile.save()
+            student = Student(profile=profile)
+            student.save()
+
             messages.success(request, 'Yeyyy! You successfully joined to Speakie!')
             return redirect('login')
 
         return render(request, 'users/register.html', {'form': form})
+
+
+class ModeratorRegisterView(View):
+    def get(self, request):
+        print("DEBUG: MOD REGISTER GET")  # TODO: Debug
+        form = UserRegisterForm()
+        return render(request, 'users/mod_register.html', {'form': form})
+
+    def post(self, request):
+        print("DEBUG: MOD REGISTER POST 1")  # TODO: Debug
+        form = UserRegisterForm(request.POST)
+
+        if form.is_valid():
+            print("DEBUG: MOD REGISTER POST 2")  # TODO: Debug
+            user = form.save()
+
+            profile = Profile(user=user)  # TODO: use signals?
+            profile.save()
+            moderator = Moderator(profile=profile)
+            moderator.save()
+            print("DEBUG: MOD REGISTER POST 3")  # TODO: Debug
+
+            messages.success(request, 'Yeyyy! You successfully joined to Speakie!')
+            return redirect('login')
+
+        return render(request, 'users/mod_register.html', {'form': form})
 
 
 class LoginView(View):

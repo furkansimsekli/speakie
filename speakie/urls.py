@@ -19,10 +19,11 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-from users.views import RegistrationView, LoginView, LogoutView, ProfileView
+from users.views import StudentRegisterView, ModeratorRegisterView, LoginView, LogoutView, ProfileView
 
 urlpatterns = [
-    path('register/', RegistrationView.as_view(), name='register'),
+    path('register/', StudentRegisterView.as_view(), name='register'),
+    path('mod-register/', ModeratorRegisterView.as_view(), name='mod-register'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('profile/', ProfileView.as_view(), name='profile'),
