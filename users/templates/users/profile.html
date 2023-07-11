@@ -1,9 +1,16 @@
 {% extends "users/base.html" %}
 {% load crispy_forms_filters %}
 {% block content %}
+    {% if user.profile.student %}
+        <h2>Student Profile</h2>
+    {% endif %}
+    {% if user.profile.moderator %}
+        <h2>Moderator Profile</h2>
+    {% endif %}
+
     <div class="content-section">
         <div class="media">
-            <img class="rounded-circle account-img" src="{{ user.profile.image.url }}" alt="">
+            <img class="rounded-circle account-img" src="{{ user.profile.profile_picture.url }}" alt="">
             <div class="media-body">
                 <h2 class="account-heading">{{ user.username }}</h2>
                 <p class="text-secondary">{{ user.email }}</p>
