@@ -1,9 +1,17 @@
 {% extends "users/base.html" %}
 {% block content %}
-    <h2>Wonderful Practices</h2>
-    <ul>
-    {% for tp in translation_practices %}
-        <li><a href="{% url 'practice' tp.course.id tp.id %}">{{ tp.question }}</a></li>
-    {% endfor %}
-    </ul>
+    <div class="container">
+        <h1>Wonderful Practices</h1>
+        <div class="row">
+            {% for tp in translation_practices %}
+                <div class="col-12">
+                    <div class="practice-card" style="border: 1px solid #ccc; border-radius: 5px; margin-bottom: 20px; padding: 20px;">
+                        <h3>{{ tp.question }}</h3>
+                        <p>Difficulty: {{ tp.difficulty }}</p>
+                        <a href="{% url 'practice' tp.course.id tp.id %}" class="btn btn-primary">Start Practice</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock content %}
