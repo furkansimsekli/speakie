@@ -1,0 +1,12 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <form action="{% url 'course-update' course_id %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form | crispy }}
+
+        <div class="form-group">
+            <button class="btn btn-outline-info" type="submit">Update Course</button>
+        </div>
+    </form>
+{% endblock content %}

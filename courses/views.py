@@ -4,7 +4,7 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Course, TranslationPractice
-from .forms import NewCourseForm
+from .forms import NewCourseForm, UpdateCourseForm
 
 
 class CourseListView(View):
@@ -30,6 +30,31 @@ class CourseCreateView(View):
             if form.is_valid():
                 form.save()
                 messages.success(request, f'Successfully created a new course!')
+
+        return redirect('home')
+
+
+class CourseUpdateView(View):
+    def get(self, request, course_id):
+        if request.user.profile.moderator:
+            course = Course.objects.filter(id=course_id).first()
+            form = UpdateCourseForm(instance=course)
+            return render(request, 'courses/course_update.html', {'form': form, 'course_id': course_id})
+
+        messages.warning(request, 'You are not authorized to this!')
+        return redirect('home')
+
+    def post(self, request, course_id):
+        if request.user.profile.moderator:
+            course = Course.objects.filter(id=course_id).first()
+            form = UpdateCourseForm(request.POST, request.FILES, instance=course)
+            if form.is_valid():
+                form.save()
+                messages.success(request, f'Successfully updated!')
+            else:
+                messages.error(request, 'Invalid form data. Please correct the errors.')
+        else:
+            messages.warning(request, 'You are not authorized to do this!')
 
         return redirect('home')
 

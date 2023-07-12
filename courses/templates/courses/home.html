@@ -12,42 +12,12 @@
                             <p class="card-text">Lorem ipsum...</p>
                             <a href="{% url 'practice-list' course.id %}" class="btn btn-primary md-2">Practices</a>
                             {% if user.profile.moderator %}
-                                <button type="button" class="btn btn-secondary m-1" data-toggle="modal"
-                                        data-target="#updateModal{{ course.id }}">
-                                    Update
-                                </button>
+                                <a href="{% url 'course-update' course.id %}" class="btn btn-secondary md-2">Update</a>
+
                                 <button type="button" class="btn btn-danger m-1" data-toggle="modal"
                                         data-target="#deleteModal{{ course.id }}">
                                     Delete
                                 </button>
-
-                                <!-- UPDATE MODAL -->
-                                <div class="modal" id="updateModal{{ course.id }}">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-
-                                            <!-- Modal Header -->
-                                            <div class="modal-header">
-                                                <h4 class="modal-title">Update {{ course.name }}</h4>
-                                                <button type="button" class="close" data-dismiss="modal">&times;
-                                                </button>
-                                            </div>
-
-                                            <!-- Modal body -->
-                                            <div class="modal-body">
-                                                Lorem ipsum
-                                            </div>
-
-                                            <!-- Modal footer -->
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-danger" data-dismiss="modal">
-                                                    Close
-                                                </button>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
 
                                 <!-- DELETE MODAL -->
                                 <div class="modal" id="deleteModal{{ course.id }}">
