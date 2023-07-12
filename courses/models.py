@@ -13,6 +13,7 @@ LEVEL_CHOICES = (
 class Course(models.Model):
     name = models.CharField(max_length=32)
     flag = models.ImageField(default='default_flag_pic.jpg', upload_to='flag_pictures')
+    models.SlugField
 
     def __str__(self):
         return self.name
