@@ -1,16 +1,15 @@
 {% extends "users/base.html" %}
 {% load crispy_forms_filters %}
 {% block content %}
-    {% if user.profile.student %}
-        <h2>Student Profile</h2>
-    {% endif %}
-    {% if user.profile.moderator %}
+    {% if user.is_moderator %}
         <h2>Moderator Profile</h2>
+    {% else %}
+        <h2>Student Profile</h2>
     {% endif %}
 
     <div class="content-section">
         <div class="media">
-            <img class="rounded-circle account-img" src="{{ user.profile.profile_picture.url }}" alt="">
+            <img class="rounded-circle account-img" src="{{ user.profile_picture.url }}" alt="">
             <div class="media-body">
                 <h2 class="account-heading">{{ user.username }}</h2>
                 <p class="text-secondary">{{ user.email }}</p>
@@ -20,8 +19,7 @@
             {% csrf_token %}
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Profile Info</legend>
-                {{ u_form|crispy }}
-                {{ p_form|crispy }}
+                {{ form|crispy }}
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Update</button>

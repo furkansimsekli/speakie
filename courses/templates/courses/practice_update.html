@@ -1,11 +1,9 @@
 {% extends "users/base.html" %}
 {% load crispy_forms_filters %}
 {% block content %}
-    {% if activation_flag %}
-        <h2>Do you want to activate it?</h2>
-    {% endif %}
-    <form action="{% url 'course-create' %}" method="POST" enctype="multipart/form-data">
+    <form action="{% url 'practice-update' course_slug practice_slug %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
+        <h2>Update Practice</h2>
         {{ form|crispy }}
         <button type="submit" class="btn btn-primary btn-block mb-4">Publish</button>
     </form>

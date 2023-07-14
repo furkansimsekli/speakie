@@ -1,16 +1,10 @@
 from django import forms
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Profile
+
+from .models import User
 
 
 class UserRegisterForm(UserCreationForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['username'].help_text = ''
-        self.fields['password1'].help_text = ''
-        self.fields['password2'].help_text = ''
-
     email = forms.EmailField()
 
     class Meta:
@@ -18,9 +12,9 @@ class UserRegisterForm(UserCreationForm):
         fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2']
 
 
-class LoginForm(forms.Form):
+class UserLoginForm(forms.Form):
     username = forms.CharField(label='Username')
-    password = forms.CharField(label='Password', widget=forms.PasswordInput)  # TODO: use PasswordInput
+    password = forms.CharField(label='Password', widget=forms.PasswordInput)
 
 
 class UserUpdateForm(forms.ModelForm):
@@ -30,10 +24,4 @@ class UserUpdateForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email']
-
-
-class ProfileUpdateForm(forms.ModelForm):
-    class Meta:
-        model = Profile
-        fields = ['profile_picture']
+        fields = ['first_name', 'last_name', 'username', 'email', 'profile_picture']

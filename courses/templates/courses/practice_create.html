@@ -1,0 +1,16 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <form action="{% url 'practice-create' course_slug %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h2>Translation Practice</h2>
+        {{ tp_form|crispy }}
+        <button type="submit" class="btn btn-primary btn-block mb-4">Publish</button>
+    </form>
+    <form action="{% url 'practice-create' course_slug %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h2>Speaking Practice</h2>
+        {{ sp_form|crispy }}
+        <button type="submit" class="btn btn-primary btn-block mb-4">Publish</button>
+    </form>
+{% endblock content %}

@@ -19,7 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-_kzq(y4*8zhdu@9l+#!81e1+pn6)j!exj_jj4ecb=f1)=xaf5z'
+SECRET_KEY = 'django-insecure-+^0_s5a-!a9u0p3x)g6n%*ckd3j&2a)!_srxo@f=&6pg)5s*s2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -29,6 +29,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -39,6 +40,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap4',
 ]
+
+AUTH_USER_MODEL = 'users.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -68,6 +71,8 @@ TEMPLATES = [
     },
 ]
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 WSGI_APPLICATION = 'speakie.wsgi.application'
 
 # Database
@@ -76,7 +81,7 @@ WSGI_APPLICATION = 'speakie.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'speakie-db',
+        'NAME': 'speakie-db-3',
         'USER': 'postgres',
         'PASSWORD': 'dummy',
         'HOST': '127.0.0.1',
@@ -119,14 +124,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+MEDIA_URL = 'media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
-LOGIN_REDIRECT_URL = 'home'
-LOGIN_URL = 'login'

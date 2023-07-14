@@ -3,12 +3,8 @@
 {% block content %}
     <form action="{% url 'login' %}" method="POST">
         {% csrf_token %}
-        {{ form | crispy }}
-
-        <!-- Submit button -->
+        {{ form|crispy }}
         <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
-
-        <!-- Register buttons -->
         <div class="text-center">
             <p>Not a member? <a href="{% url 'register' %}">Register</a></p>
         </div>

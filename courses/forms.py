@@ -1,14 +1,20 @@
 from django import forms
-from .models import Course
 
+from .models import Course, TranslationPractice, SpeakingPractice
 
-class NewCourseForm(forms.ModelForm):
+class CourseCreateForm(forms.ModelForm):
     class Meta:
         model = Course
-        fields = ['name', 'flag']
+        fields = ['title', 'description', 'flag_picture']
 
 
-class UpdateCourseForm(forms.ModelForm):
+class TranslationPracticeCreateForm(forms.ModelForm):
     class Meta:
-        model = Course
-        fields = ['name', 'flag']
+        model = TranslationPractice
+        fields = ['course', 'title', 'question', 'answer', 'difficulty']
+
+
+class SpeakingPracticeCreateForm(forms.ModelForm):
+    class Meta:
+        model = SpeakingPractice
+        fields = ['course', 'title', 'paragraph', 'difficulty']
