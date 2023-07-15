@@ -1,0 +1,24 @@
+{% extends "users/base.html" %}
+{% block content %}
+    <p>{{ tp.question }}</p>
+    {% if tp.difficulty == 1 %}
+        <p>Difficulty: Easy</p>
+    {% elif tp.difficulty == 2 %}
+        <p>Difficulty: Intermediate</p>
+    {% elif tp.difficulty == 3 %}
+        <p>Difficulty: Hard</p>
+    {% endif %}
+
+    <form action="{% url 'tp' tp.course.slug tp.slug %}" method="POST">
+        {% csrf_token %}
+
+        <!-- Answer input -->
+        <div class="form-outline mb-4">
+            <input type="text" id="answer" name="answer" class="form-control" placeholder="Your answer here..."/>
+            <label class="form-label" for="answer"></label>
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-primary btn-block mb-4">Submit</button>
+    </form>
+{% endblock content %}

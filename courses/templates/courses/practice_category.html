@@ -1,0 +1,31 @@
+{% extends "users/base.html" %}
+{% block content %}
+    <div class="container">
+        <h2>{{ course.title }}</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-4 d-flex align-items-stretch">
+                <div class="card" style="width: 18rem;">
+                    <img src="" class="card-img-top" alt="">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Translating Practice</h5>
+                        <p class="card-text">You can practice your skills by translating sentences from {{ course }} to
+                            English!</p>
+                        <p class="card-text">Total: {{ tp_count }}</p>
+                        <a href="{% url 'tp-list' course.slug %}" class="btn btn-primary md-2 mt-auto">Start Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 d-flex align-items-stretch">
+                <div class="card" style="width: 18rem;">
+                    <img src="" class="card-img-top" alt="">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Speaking Practice</h5>
+                        <p class="card-text">Speak more, learn better!</p>
+                        <p class="card-text">Total: {{ sp_count }}</p>
+                        <a href="{% url 'sp-list' course.slug %}" class="btn btn-primary md-2 mt-auto">Start Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

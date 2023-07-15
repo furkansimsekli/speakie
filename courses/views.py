@@ -95,155 +95,262 @@ class CourseDeleteView(View):
             return redirect('course-list')
 
 
-class PracticeListView(View):
+class PracticeCategoryView(View):
     def get(self, request, course_slug):
         course = Course.objects.filter(is_active=True, slug=course_slug).first()
-        tp = course.translationpractice_set.all()
-        sp = course.speakingpractice_set.all()
+        tp_count = len(course.translationpractice_set.all())
+        sp_count = len(course.speakingpractice_set.all())
 
         ctx = {
-            'tp': tp,
-            'sp': sp,
-            'course_slug': course_slug
+            'course': course,
+            'tp_count': tp_count,
+            'sp_count': sp_count
         }
-        return render(request, 'courses/practice_list.html', context=ctx)
 
-    def post(self, request):
-        pass
-
-
-class PracticeCreateView(View):
-    def get(self, request, course_slug):
-        if request.user.is_moderator:
-            tp_form = forms.TranslationPracticeCreateForm()
-            sp_form = forms.SpeakingPracticeCreateForm()
-            ctx = {
-                'tp_form': tp_form,
-                'sp_form': sp_form,
-                'course_slug': course_slug
-            }
-            return render(request, 'courses/practice_create.html', context=ctx)
-        else:
-            messages.warning(request, 'You are not authorized to do this!')
-            return redirect('course-list')
+        return render(request, 'courses/practice_category.html', ctx)
 
     def post(self, request, course_slug):
-        if request.user.is_moderator:
-            tp_form = forms.TranslationPracticeCreateForm(request.POST)
-            sp_form = forms.SpeakingPracticeCreateForm(request.POST)
-            course = Course.objects.filter(is_active=True, slug=course_slug).first()
-            tp = course.translationpractice_set.all()
-            sp = course.speakingpractice_set.all()
-
-            ctx = {
-                'tp': tp,
-                'sp': sp,
-                'course_slug': course_slug
-            }
-
-            if tp_form.is_valid():
-                tp_form.save()
-                messages.success(request, 'New translation practice has been published!')
-                return render(request, 'courses/practice_list.html', context=ctx)
-            elif sp_form.is_valid():
-                sp_form.save()
-                messages.success(request, 'New speaking practice has been published!')
-                return render(request, 'courses/practice_list.html', context=ctx)
-            else:
-                ctx = {
-                    'tp_form': tp_form,
-                    'sp_form': sp_form,
-                    'course_slug': course_slug
-                }
-                return render(request, 'courses/practice_create.html', context=ctx)
-        else:
-            messages.warning(request, 'You are not authorized to do this!')
-            return redirect('course-list')
-
-
-class PracticeUpdateView(View):
-    def get(self, request, course_slug, practice_slug):
-        if request.user.is_moderator:
-            tp = TranslationPractice.objects.filter(slug=practice_slug).first()
-
-            if tp:
-                form = forms.TranslationPracticeCreateForm(instance=tp)
-            else:
-                sp = SpeakingPractice.objects.filter(slug=practice_slug).first()
-                form = forms.SpeakingPracticeCreateForm(instance=sp)
-
-            ctx = {
-                'form': form,
-                'course_slug': course_slug,
-                'practice_slug': practice_slug,
-            }
-            return render(request, 'courses/practice_update.html', context=ctx)
-        else:
-            messages.warning(request, 'You are not authorized to do this!')
-            return redirect('course-list')
-
-    def post(self, request, course_slug, practice_slug):
-        if request.user.is_moderator:
-            tp = TranslationPractice.objects.filter(slug=practice_slug).first()
-
-            if tp:
-                tp_form = forms.TranslationPracticeCreateForm(request.POST, instance=tp)
-                if tp_form.is_valid():
-                    tp_form.save()
-                    messages.success(request, 'Translation practice has been successfully updated!')
-            else:
-                sp = SpeakingPractice.objects.filter(slug=practice_slug).first()
-                sp_form = forms.SpeakingPracticeCreateForm(request.POST, instance=sp)
-                if sp_form.is_valid():
-                    sp_form.save()
-                    messages.success(request, 'Speaking practice has been successfully updated!')
-
-            course = Course.objects.filter(is_active=True, slug=course_slug).first()
-            tp = course.translationpractice_set.all()
-            sp = course.speakingpractice_set.all()
-
-            ctx = {
-                'tp': tp,
-                'sp': sp,
-                'course_slug': course_slug
-            }
-            return render(request, 'courses/practice_list.html', context=ctx)
-        else:
-            messages.warning(request, 'You are not authorized to do this!')
-            return redirect('course-list')
-
-
-class PracticeDeleteView(View):
-    def get(self, request):
         pass
 
-    def post(self, request, course_slug, practice_slug):
-        tp = TranslationPractice.objects.filter(slug=practice_slug).first()
+
+class TranslationPracticeListView(View):
+    def get(self, request, course_slug):
+        course = Course.objects.filter(is_active=True, slug=course_slug).first()
+        tp_list = course.translationpractice_set.all()
+
+        ctx = {
+            'course_slug': course_slug,
+            'tp_list': tp_list
+        }
+
+        return render(request, 'courses/translation_practice_list.html', ctx)
+
+    def post(self, request, course_slug):
+        pass
+
+
+class TranslationPracticeCreateView(View):
+    def get(self, request, course_slug):
+        form = forms.TranslationPracticeCreateForm()
+
+        ctx = {
+            'course_slug': course_slug,
+            'form': form
+        }
+
+        return render(request, 'courses/translation_practice_create.html', ctx)
+
+    def post(self, request, course_slug):
+        form = forms.TranslationPracticeCreateForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'New translation practice has been added to inventory!')
+        else:
+            messages.warning(request, 'The form you have sent is not valid!')
+
+        course = Course.objects.filter(is_active=True, slug=course_slug).first()
+        tp_list = course.translationpractice_set.all()
+
+        ctx = {
+            'course_slug': course_slug,
+            'tp_list': tp_list
+        }
+
+        return render(request, 'courses/translation_practice_list.html', ctx)
+
+
+class TranslationPracticeUpdateView(View):
+    def get(self, request, course_slug, tp_slug):
+        tp = TranslationPractice.objects.filter(slug=tp_slug).first()
+        form = forms.TranslationPracticeCreateForm(instance=tp)
+
+        ctx = {
+            'course_slug': course_slug,
+            'tp_slug': tp_slug,
+            'form': form
+        }
+
+        return render(request, 'courses/translation_practice_update.html', ctx)
+
+    def post(self, request, course_slug, tp_slug):
+        tp = TranslationPractice.objects.filter(slug=tp_slug).first()
+        form = forms.TranslationPracticeCreateForm(request.POST, instance=tp)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Practice has been updated!')
+        else:
+            messages.warning(request, 'The form you have sent is not valid!')
+
+        course = Course.objects.filter(is_active=True, slug=course_slug).first()
+        tp_list = course.translationpractice_set.all()
+
+        ctx = {
+            'course_slug': course_slug,
+            'tp_list': tp_list
+        }
+
+        return render(request, 'courses/translation_practice_list.html', ctx)
+
+class TranslationPracticeDeleteView(View):
+    def get(self, request, course_slug, tp_slug):
+        pass
+
+    def post(self, request, course_slug, tp_slug):
+        tp = TranslationPractice.objects.filter(slug=tp_slug).first()
 
         if tp:
             tp.delete()
-            messages.success(request, 'Translation practice has been successfully deleted!')
+            messages.success(request, 'Practice has been deleted!')
         else:
-            sp = SpeakingPractice.objects.filter(slug=practice_slug).first()
-            if sp:
-                sp.delete()
-                messages.success(request, 'Translation practice has been successfully deleted!')
+            messages.warning(request, 'Chosen practice does not exist!')
 
         course = Course.objects.filter(is_active=True, slug=course_slug).first()
-        tp = course.translationpractice_set.all()
-        sp = course.speakingpractice_set.all()
+        tp_list = course.translationpractice_set.all()
 
         ctx = {
-            'tp': tp,
-            'sp': sp,
-            'course_slug': course_slug
+            'course_slug': course_slug,
+            'tp_list': tp_list
         }
-        return render(request, 'courses/practice_list.html', context=ctx)
+
+        return render(request, 'courses/translation_practice_list.html', ctx)
 
 
-class PracticeView(LoginRequiredMixin, View):
-    def get(self, request):
+class TranslationPracticeView(LoginRequiredMixin, View):
+    def get(self, request, course_slug, tp_slug):
+        tp = TranslationPractice.objects.filter(slug=tp_slug).first()
+
+        ctx = {
+            'course_slug': course_slug,
+            'tp_slug': tp_slug,
+            'tp': tp
+        }
+
+        return render(request, 'courses/translation_practice.html', ctx)
+
+    def post(self, request, course_slug, tp_slug):
+        # TODO: Implement scoring mechanism
         pass
 
-    def post(self, request):
+
+class SpeakingPracticeListView(View):
+    def get(self, request, course_slug):
+        course = Course.objects.filter(is_active=True, slug=course_slug).first()
+        sp_list = course.speakingpractice_set.all()
+
+        ctx = {
+            'course_slug': course_slug,
+            'sp_list': sp_list
+        }
+
+        return render(request, 'courses/speaking_practice_list.html', ctx)
+
+    def post(self, request, course_slug):
+        pass
+
+
+class SpeakingPracticeCreateView(View):
+    def get(self, request, course_slug):
+        form = forms.SpeakingPracticeCreateForm()
+
+        ctx = {
+            'course_slug': course_slug,
+            'form': form
+        }
+
+        return render(request, 'courses/speaking_practice_create.html', ctx)
+
+    def post(self, request, course_slug):
+        form = forms.SpeakingPracticeCreateForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'New speaking practice has been added to inventory!')
+        else:
+            messages.warning(request, 'The form you have sent is not valid!')
+
+        course = Course.objects.filter(is_active=True, slug=course_slug).first()
+        sp_list = course.speakingpractice_set.all()
+
+        ctx = {
+            'course_slug': course_slug,
+            'sp_list': sp_list
+        }
+
+        return render(request, 'courses/speaking_practice_list.html', ctx)
+
+
+class SpeakingPracticeUpdateView(View):
+    def get(self, request, course_slug, sp_slug):
+        sp = SpeakingPractice.objects.filter(slug=sp_slug).first()
+        form = forms.SpeakingPracticeCreateForm(instance=sp)
+
+        ctx = {
+            'course_slug': course_slug,
+            'sp_slug': sp_slug,
+            'form': form
+        }
+
+        return render(request, 'courses/speaking_practice_update.html', ctx)
+
+    def post(self, request, course_slug, sp_slug):
+        sp = SpeakingPractice.objects.filter(slug=sp_slug).first()
+        form = forms.SpeakingPracticeCreateForm(request.POST, instance=sp)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Practice has been updated!')
+        else:
+            messages.warning(request, 'The form you have sent is not valid!')
+
+        course = Course.objects.filter(is_active=True, slug=course_slug).first()
+        sp_list = course.speakingpractice_set.all()
+
+        ctx = {
+            'course_slug': course_slug,
+            'sp_list': sp_list
+        }
+
+        return render(request, 'courses/speaking_practice_list.html', ctx)
+
+
+class SpeakingPracticeDeleteView(View):
+    def get(self, request, course_slug, sp_slug):
+        pass
+
+    def post(self, request, course_slug, sp_slug):
+        sp = SpeakingPractice.objects.filter(slug=sp_slug).first()
+
+        if sp:
+            sp.delete()
+            messages.success(request, 'Practice has been deleted!')
+        else:
+            messages.warning(request, 'Chosen practice does not exist!')
+
+        course = Course.objects.filter(is_active=True, slug=course_slug).first()
+        sp_list = course.speakingpractice_set.all()
+
+        ctx = {
+            'course_slug': course_slug,
+            'sp_list': sp_list
+        }
+
+        return render(request, 'courses/speaking_practice_list.html', ctx)
+
+
+class SpeakingPracticeView(LoginRequiredMixin, View):
+    def get(self, request, course_slug, sp_slug):
+        sp = SpeakingPractice.objects.filter(slug=sp_slug).first()
+
+        ctx = {
+            'course_slug': course_slug,
+            'sp_slug': sp_slug,
+            'sp': sp
+        }
+
+        return render(request, 'courses/speaking_practice.html', ctx)
+
+    def post(self, request, course_slug, sp_slug):
+        # TODO: Implement scoring mechanism
         pass

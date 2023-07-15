@@ -1,0 +1,24 @@
+{% extends "users/base.html" %}
+{% block content %}
+    <p>{{ sp.paragraph }}</p>
+    {% if sp.difficulty == 1 %}
+        <p>Difficulty: Easy</p>
+    {% elif sp.difficulty == 2 %}
+        <p>Difficulty: Intermediate</p>
+    {% elif sp.difficulty == 3 %}
+        <p>Difficulty: Hard</p>
+    {% endif %}
+
+    <form action="{% url 'sp' sp.course.slug sp.slug %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Answer input -->
+        <div class="form-outline mb-4">
+            <input type="file" id="answer" name="answer" class="form-control" accept="audio/*"/>
+            <label class="form-label" for="answer">Upload audio file</label>
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-primary btn-block mb-4">Submit</button>
+    </form>
+{% endblock content %}

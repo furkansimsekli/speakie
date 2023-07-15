@@ -10,7 +10,7 @@
                         <div class="card-body text-center">
                             <h5 class="card-title">{{ course.title }}</h5>
                             <p class="card-text">{{ course.description }}</p>
-                            <a href="{% url 'practice-list' course.slug %}" class="btn btn-primary md-2">Practices</a>
+                            <a href="{% url 'practice-category' course.slug %}" class="btn btn-primary md-2">Practices</a>
                             {% if user.is_moderator %}
                                 <a href="{% url 'course-update' course.slug %}"
                                    class="btn btn-secondary md-2">Update</a>
