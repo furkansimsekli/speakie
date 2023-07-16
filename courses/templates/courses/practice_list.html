@@ -1,4 +1,4 @@
-{% extends "users/base.html" %}
+{% extends "base/base.html" %}
 {% block content %}
     {% if user.is_moderator %}
         <a type="button" class="btn btn-primary" href="{% url 'practice-create' course_slug %}">New Practice</a>

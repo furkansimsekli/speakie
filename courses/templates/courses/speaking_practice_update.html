@@ -1,4 +1,4 @@
-{% extends "users/base.html" %}
+{% extends "base/base.html" %}
 {% load crispy_forms_filters %}
 {% block content %}
     <form action="{% url 'sp-update' course_slug sp_slug %}" method="POST" enctype="multipart/form-data">
