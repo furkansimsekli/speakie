@@ -26,15 +26,18 @@ class Course(models.Model):
 
 class TranslationPractice(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    title = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True, blank=True)
-    question = models.CharField(max_length=255)
-    answer = models.CharField(max_length=255)
+    title = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
+    question = models.CharField(max_length=255, default='')
+    answer = models.CharField(max_length=255, default='')
+    choice_1 = models.CharField(max_length=255, default='')
+    choice_2 = models.CharField(max_length=255, default='')
+    choice_3 = models.CharField(max_length=255, default='')
     difficulty = models.SmallIntegerField(default=0, choices=LEVEL_CHOICES)
     is_active = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
+        self.slug = slugify(self.title)[:256]
         super().save(*args, **kwargs)
 
     def __str__(self):
