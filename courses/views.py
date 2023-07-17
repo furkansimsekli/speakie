@@ -20,7 +20,7 @@ class CourseListView(View):
         pass
 
 
-class CourseCreateView(View):
+class CourseCreateView(LoginRequiredMixin, View):
     def get(self, request):
         form = forms.CourseCreateForm()
         return render(request, 'courses/course_create.html', {'form': form})
@@ -51,7 +51,7 @@ class CourseCreateView(View):
             return redirect('course-list')
 
 
-class CourseUpdateView(View):
+class CourseUpdateView(LoginRequiredMixin, View):
     def get(self, request, course_slug):
         course = Course.objects.filter(is_active=True, slug=course_slug).first()
         ctx = {
@@ -81,7 +81,7 @@ class CourseUpdateView(View):
             return redirect('course-list')
 
 
-class CourseDeleteView(View):
+class CourseDeleteView(LoginRequiredMixin, View):
     def get(self, request):
         pass
 
@@ -97,7 +97,7 @@ class CourseDeleteView(View):
             return redirect('course-list')
 
 
-class PracticeCategoryView(View):
+class PracticeCategoryView(LoginRequiredMixin, View):
     def get(self, request, course_slug):
         course = Course.objects.filter(is_active=True, slug=course_slug).first()
         tp_count = len(course.translationpractice_set.all())
@@ -115,7 +115,7 @@ class PracticeCategoryView(View):
         pass
 
 
-class TranslationPracticeListView(View):
+class TranslationPracticeListView(LoginRequiredMixin, View):
     def get(self, request, course_slug):
         course = Course.objects.filter(is_active=True, slug=course_slug).first()
         translation_practices = course.translationpractice_set.all()
@@ -136,7 +136,7 @@ class TranslationPracticeListView(View):
         pass
 
 
-class TranslationPracticeCreateView(View):
+class TranslationPracticeCreateView(LoginRequiredMixin, View):
     def get(self, request, course_slug):
         form = forms.TranslationPracticeCreateForm()
 
@@ -167,7 +167,7 @@ class TranslationPracticeCreateView(View):
         return render(request, 'courses/translation_practice_list.html', ctx)
 
 
-class TranslationPracticeUpdateView(View):
+class TranslationPracticeUpdateView(LoginRequiredMixin, View):
     def get(self, request, course_slug, tp_slug):
         tp = TranslationPractice.objects.filter(slug=tp_slug).first()
         form = forms.TranslationPracticeCreateForm(instance=tp)
@@ -201,7 +201,7 @@ class TranslationPracticeUpdateView(View):
         return render(request, 'courses/translation_practice_list.html', ctx)
 
 
-class TranslationPracticeDeleteView(View):
+class TranslationPracticeDeleteView(LoginRequiredMixin, View):
     def get(self, request, course_slug, tp_slug):
         pass
 
@@ -271,7 +271,7 @@ class TranslationPracticeView(LoginRequiredMixin, View):
         return render(request, 'courses/translation_practice.html', ctx)
 
 
-class SpeakingPracticeListView(View):
+class SpeakingPracticeListView(LoginRequiredMixin, View):
     def get(self, request, course_slug):
         course = Course.objects.filter(is_active=True, slug=course_slug).first()
         sp_list = course.speakingpractice_set.all()
@@ -287,7 +287,7 @@ class SpeakingPracticeListView(View):
         pass
 
 
-class SpeakingPracticeCreateView(View):
+class SpeakingPracticeCreateView(LoginRequiredMixin, View):
     def get(self, request, course_slug):
         form = forms.SpeakingPracticeCreateForm()
 
@@ -318,7 +318,7 @@ class SpeakingPracticeCreateView(View):
         return render(request, 'courses/speaking_practice_list.html', ctx)
 
 
-class SpeakingPracticeUpdateView(View):
+class SpeakingPracticeUpdateView(LoginRequiredMixin, View):
     def get(self, request, course_slug, sp_slug):
         sp = SpeakingPractice.objects.filter(slug=sp_slug).first()
         form = forms.SpeakingPracticeCreateForm(instance=sp)
@@ -352,7 +352,7 @@ class SpeakingPracticeUpdateView(View):
         return render(request, 'courses/speaking_practice_list.html', ctx)
 
 
-class SpeakingPracticeDeleteView(View):
+class SpeakingPracticeDeleteView(LoginRequiredMixin, View):
     def get(self, request, course_slug, sp_slug):
         pass
 
