@@ -6,6 +6,7 @@ from django.views import View
 from random import shuffle
 
 from . import forms
+from .constants import TRANSLATION_PRACTICE_COEFFICIENT, SPEAKING_PRACTICE_COEFFICIENT
 from .models import Course, TranslationPractice, SpeakingPractice, TranslationPracticeSolved
 
 
@@ -240,19 +241,17 @@ class TranslationPracticeView(LoginRequiredMixin, View):
         return render(request, 'courses/translation_practice.html', ctx)
 
     def post(self, request, course_slug, tp_slug):
-        # TODO: Implement scoring mechanism
         tp = TranslationPractice.objects.filter(slug=tp_slug).first()
         user = request.user
 
         if request.POST.get('answer') == tp.answer:
-            # TODO: Move constant to constants
             tp_solved = TranslationPracticeSolved.objects.filter(user=user, practice=tp)
 
             if tp_solved:
                 messages.warning(request, 'You already solved this practice!')
             else:
                 TranslationPracticeSolved.objects.create(user=user, practice=tp)
-                points = tp.difficulty * 10
+                points = tp.difficulty * TRANSLATION_PRACTICE_COEFFICIENT
                 user.score += points
                 user.save()
                 messages.success(request, f'CORRECT! You have earned {points} points')
