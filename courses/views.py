@@ -6,7 +6,7 @@ from django.views import View
 from random import shuffle
 
 from . import forms
-from .models import Course, TranslationPractice, SpeakingPractice
+from .models import Course, TranslationPractice, SpeakingPractice, TranslationPracticeSolved
 
 
 class CourseListView(View):
@@ -118,7 +118,12 @@ class PracticeCategoryView(View):
 class TranslationPracticeListView(View):
     def get(self, request, course_slug):
         course = Course.objects.filter(is_active=True, slug=course_slug).first()
-        tp_list = course.translationpractice_set.all()
+        translation_practices = course.translationpractice_set.all()
+        tp_list = []
+
+        for tp in translation_practices:
+            is_solved = TranslationPracticeSolved.objects.filter(user=request.user, practice=tp).first()
+            tp_list.append({'tp': tp, 'is_solved': is_solved})
 
         ctx = {
             'course_slug': course_slug,
@@ -195,6 +200,7 @@ class TranslationPracticeUpdateView(View):
 
         return render(request, 'courses/translation_practice_list.html', ctx)
 
+
 class TranslationPracticeDeleteView(View):
     def get(self, request, course_slug, tp_slug):
         pass
@@ -240,10 +246,16 @@ class TranslationPracticeView(LoginRequiredMixin, View):
 
         if request.POST.get('answer') == tp.answer:
             # TODO: Move constant to constants
-            points = tp.difficulty * 10
-            messages.success(request, f'CORRECT! You have earned {points} points')
-            user.score += points
-            user.save()
+            tp_solved = TranslationPracticeSolved.objects.filter(user=user, practice=tp)
+
+            if tp_solved:
+                messages.warning(request, 'You already solved this practice!')
+            else:
+                TranslationPracticeSolved.objects.create(user=user, practice=tp)
+                points = tp.difficulty * 10
+                user.score += points
+                user.save()
+                messages.success(request, f'CORRECT! You have earned {points} points')
         else:
             messages.warning(request, f'WRONG! Correct answer: {tp.answer}')
 

@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.text import slugify
 
+from users.models import User
+
 # TODO: Move these type of constant configs to somewhere else
 LEVEL_CHOICES = (
     (1, 'Easy'),
@@ -58,3 +60,11 @@ class SpeakingPractice(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class TranslationPracticeSolved(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    practice = models.ForeignKey(TranslationPractice, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user', 'practice')
