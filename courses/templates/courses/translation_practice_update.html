@@ -1,9 +1,12 @@
 {% extends "base/base.html" %}
 {% load crispy_forms_filters %}
 {% block content %}
-    <form action="{% url 'tp-update' course_slug tp_slug %}" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <button type="submit" class="btn btn-primary btn-block mb-4">Update</button>
-    </form>
+    <div class="container">
+        <h2>Update Translation Practice</h2>
+        <form action="{% url 'tp-update' course_slug tp_slug %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary btn-block mb-4">Update</button>
+        </form>
+    </div>
 {% endblock content %}
