@@ -3,6 +3,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
 
+from random import shuffle
+
 from . import forms
 from .models import Course, TranslationPractice, SpeakingPractice
 
@@ -220,18 +222,41 @@ class TranslationPracticeDeleteView(View):
 class TranslationPracticeView(LoginRequiredMixin, View):
     def get(self, request, course_slug, tp_slug):
         tp = TranslationPractice.objects.filter(slug=tp_slug).first()
-
+        shuffled_choices = [tp.answer, tp.choice_1, tp.choice_2, tp.choice_3]
+        shuffle(shuffled_choices)
         ctx = {
             'course_slug': course_slug,
             'tp_slug': tp_slug,
-            'tp': tp
+            'tp': tp,
+            'choices': shuffled_choices
         }
 
         return render(request, 'courses/translation_practice.html', ctx)
 
     def post(self, request, course_slug, tp_slug):
         # TODO: Implement scoring mechanism
-        pass
+        tp = TranslationPractice.objects.filter(slug=tp_slug).first()
+        user = request.user
+
+        if request.POST.get('answer') == tp.answer:
+            # TODO: Move constant to constants
+            points = tp.difficulty * 10
+            messages.success(request, f'CORRECT! You have earned {points} points')
+            user.score += points
+            user.save()
+        else:
+            messages.warning(request, f'WRONG! Correct answer: {tp.answer}')
+
+        shuffled_choices = [tp.answer, tp.choice_1, tp.choice_2, tp.choice_3]
+        shuffle(shuffled_choices)
+        ctx = {
+            'course_slug': course_slug,
+            'tp_slug': tp_slug,
+            'tp': tp,
+            'choices': shuffled_choices
+        }
+
+        return render(request, 'courses/translation_practice.html', ctx)
 
 
 class SpeakingPracticeListView(View):

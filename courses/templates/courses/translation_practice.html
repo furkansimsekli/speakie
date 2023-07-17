@@ -12,13 +12,17 @@
     <form action="{% url 'tp' tp.course.slug tp.slug %}" method="POST">
         {% csrf_token %}
 
-        <!-- Answer input -->
-        <div class="form-outline mb-4">
-            <input type="text" id="answer" name="answer" class="form-control" placeholder="Your answer here..."/>
-            <label class="form-label" for="answer"></label>
-        </div>
+        <!-- Multiple choice options -->
+        {% for choice in choices %}
+            <div class="form-check mb-4">
+                <input class="form-check-input" type="radio" name="answer" id="choice{{ forloop.counter }}"
+                       value="{{ choice }}">
+                <label class="form-check-label" for="choice{{ forloop.counter }}">{{ choice }}</label>
+            </div>
+        {% endfor %}
 
         <!-- Submit button -->
         <button type="submit" class="btn btn-primary btn-block mb-4">Submit</button>
     </form>
+
 {% endblock content %}

@@ -11,7 +11,7 @@ class CourseCreateForm(forms.ModelForm):
 class TranslationPracticeCreateForm(forms.ModelForm):
     class Meta:
         model = TranslationPractice
-        fields = ['course', 'title', 'question', 'answer', 'difficulty']
+        fields = ['course', 'title', 'question', 'answer', 'choice_1', 'choice_2', 'choice_3', 'difficulty']
 
 
 class SpeakingPracticeCreateForm(forms.ModelForm):
