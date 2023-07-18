@@ -120,7 +120,6 @@ class TranslationPracticeListView(LoginRequiredMixin, View):
             'course_slug': course_slug,
             'tp_list': tp_list
         }
-
         return render(request, 'courses/translation_practice_list.html', ctx)
 
     def post(self, request, course_slug):
@@ -151,7 +150,13 @@ class TranslationPracticeCreateView(LoginRequiredMixin, View):
             return render(request, 'courses/translation_practice_create.html', ctx)
 
         course = Course.objects.filter(is_active=True, slug=course_slug).first()
-        tp_list = course.translationpractice_set.all()
+        translation_practices = course.translationpractice_set.all()
+        tp_list = []
+
+        for tp in translation_practices:
+            is_solved = TranslationPracticeSolved.objects.filter(user=request.user, practice=tp).first()
+            tp_list.append({'tp': tp, 'is_solved': is_solved})
+
         ctx = {
             'course_slug': course_slug,
             'tp_list': tp_list
@@ -188,7 +193,13 @@ class TranslationPracticeUpdateView(LoginRequiredMixin, View):
             return render(request, 'courses/translation_practice_update.html', ctx)
 
         course = Course.objects.filter(is_active=True, slug=course_slug).first()
-        tp_list = course.translationpractice_set.all()
+        translation_practices = course.translationpractice_set.all()
+        tp_list = []
+
+        for tp in translation_practices:
+            is_solved = TranslationPracticeSolved.objects.filter(user=request.user, practice=tp).first()
+            tp_list.append({'tp': tp, 'is_solved': is_solved})
+
         ctx = {
             'course_slug': course_slug,
             'tp_list': tp_list
@@ -210,7 +221,13 @@ class TranslationPracticeDeleteView(LoginRequiredMixin, View):
             messages.warning(request, 'Chosen practice does not exist!')
 
         course = Course.objects.filter(is_active=True, slug=course_slug).first()
-        tp_list = course.translationpractice_set.all()
+        translation_practices = course.translationpractice_set.all()
+        tp_list = []
+
+        for tp in translation_practices:
+            is_solved = TranslationPracticeSolved.objects.filter(user=request.user, practice=tp).first()
+            tp_list.append({'tp': tp, 'is_solved': is_solved})
+
         ctx = {
             'course_slug': course_slug,
             'tp_list': tp_list
