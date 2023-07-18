@@ -1,7 +1,8 @@
 {% extends "base/base.html" %}
 {% block content %}
     {% if user.is_moderator %}
-        <a type="button" class="btn btn-primary" href="{% url 'tp-create' course_slug %}">New Practice</a>
+        <a type="button" class="btn btn-primary" style="margin: 20px;" href="{% url 'tp-create' course_slug %}">New
+            Practice</a>
     {% endif %}
     <div class="container">
         <h1>Translation Practices</h1>
