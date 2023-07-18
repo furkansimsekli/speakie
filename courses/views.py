@@ -1,12 +1,12 @@
-from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, redirect
-from django.views import View
-
 from random import shuffle
 
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views import View
+
 from . import forms
-from .constants import TRANSLATION_PRACTICE_COEFFICIENT, SPEAKING_PRACTICE_COEFFICIENT
+from .constants import TRANSLATION_PRACTICE_COEFFICIENT
 from .models import Course, TranslationPractice, SpeakingPractice, TranslationPracticeSolved
 
 
@@ -53,7 +53,7 @@ class CourseCreateView(LoginRequiredMixin, View):
 
 class CourseUpdateView(LoginRequiredMixin, View):
     def get(self, request, course_slug):
-        course = Course.objects.filter(is_active=True, slug=course_slug).first()
+        course = get_object_or_404(Course, is_active=True, slug=course_slug)
         ctx = {
             'form': forms.CourseCreateForm(instance=course),
             'course_slug': course_slug
@@ -61,7 +61,7 @@ class CourseUpdateView(LoginRequiredMixin, View):
         return render(request, 'courses/course_update.html', context=ctx)
 
     def post(self, request, course_slug):
-        course = Course.objects.filter(is_active=True, slug=course_slug).first()
+        course = get_object_or_404(Course, is_active=True, slug=course_slug)
         form = forms.CourseCreateForm(request.POST, files=request.FILES, instance=course)
         ctx = {
             'form': forms.CourseCreateForm(instance=course),
@@ -81,7 +81,7 @@ class CourseDeleteView(LoginRequiredMixin, View):
         pass
 
     def post(self, request, course_slug):
-        course = Course.objects.filter(is_active=True, slug=course_slug).first()
+        course = get_object_or_404(Course, is_active=True, slug=course_slug)
         course.is_active = False
         course.save()
         messages.success(request, 'Successfully deleted the course!')
@@ -90,16 +90,14 @@ class CourseDeleteView(LoginRequiredMixin, View):
 
 class PracticeCategoryView(LoginRequiredMixin, View):
     def get(self, request, course_slug):
-        course = Course.objects.filter(is_active=True, slug=course_slug).first()
+        course = get_object_or_404(Course, is_active=True, slug=course_slug)
         tp_count = len(course.translationpractice_set.all())
         sp_count = len(course.speakingpractice_set.all())
-
         ctx = {
             'course': course,
             'tp_count': tp_count,
             'sp_count': sp_count
         }
-
         return render(request, 'courses/practice_category.html', ctx)
 
     def post(self, request, course_slug):
@@ -108,7 +106,7 @@ class PracticeCategoryView(LoginRequiredMixin, View):
 
 class TranslationPracticeListView(LoginRequiredMixin, View):
     def get(self, request, course_slug):
-        course = Course.objects.filter(is_active=True, slug=course_slug).first()
+        course = get_object_or_404(Course, is_active=True, slug=course_slug)
         translation_practices = course.translationpractice_set.all()
         tp_list = []
 
@@ -149,7 +147,7 @@ class TranslationPracticeCreateView(LoginRequiredMixin, View):
             messages.warning(request, 'The form you have sent is not valid!')
             return render(request, 'courses/translation_practice_create.html', ctx)
 
-        course = Course.objects.filter(is_active=True, slug=course_slug).first()
+        course = get_object_or_404(Course, is_active=True, slug=course_slug)
         translation_practices = course.translationpractice_set.all()
         tp_list = []
 
@@ -166,18 +164,17 @@ class TranslationPracticeCreateView(LoginRequiredMixin, View):
 
 class TranslationPracticeUpdateView(LoginRequiredMixin, View):
     def get(self, request, course_slug, tp_slug):
-        tp = TranslationPractice.objects.filter(slug=tp_slug).first()
+        tp = get_object_or_404(TranslationPractice, slug=tp_slug)
         form = forms.TranslationPracticeCreateForm(instance=tp)
         ctx = {
             'course_slug': course_slug,
             'tp_slug': tp_slug,
             'form': form
         }
-
         return render(request, 'courses/translation_practice_update.html', ctx)
 
     def post(self, request, course_slug, tp_slug):
-        tp = TranslationPractice.objects.filter(slug=tp_slug).first()
+        tp = get_object_or_404(TranslationPractice, slug=tp_slug)
         form = forms.TranslationPracticeCreateForm(request.POST, instance=tp)
         ctx = {
             'course_slug': course_slug,
@@ -192,7 +189,7 @@ class TranslationPracticeUpdateView(LoginRequiredMixin, View):
             messages.warning(request, 'The form you have sent is not valid!')
             return render(request, 'courses/translation_practice_update.html', ctx)
 
-        course = Course.objects.filter(is_active=True, slug=course_slug).first()
+        course = get_object_or_404(Course, is_active=True, slug=course_slug)
         translation_practices = course.translationpractice_set.all()
         tp_list = []
 
@@ -212,7 +209,7 @@ class TranslationPracticeDeleteView(LoginRequiredMixin, View):
         pass
 
     def post(self, request, course_slug, tp_slug):
-        tp = TranslationPractice.objects.filter(slug=tp_slug).first()
+        tp = get_object_or_404(TranslationPractice, slug=tp_slug)
 
         if tp:
             tp.delete()
@@ -220,7 +217,7 @@ class TranslationPracticeDeleteView(LoginRequiredMixin, View):
         else:
             messages.warning(request, 'Chosen practice does not exist!')
 
-        course = Course.objects.filter(is_active=True, slug=course_slug).first()
+        course = get_object_or_404(Course, is_active=True, slug=course_slug)
         translation_practices = course.translationpractice_set.all()
         tp_list = []
 
@@ -237,7 +234,7 @@ class TranslationPracticeDeleteView(LoginRequiredMixin, View):
 
 class TranslationPracticeView(LoginRequiredMixin, View):
     def get(self, request, course_slug, tp_slug):
-        tp = TranslationPractice.objects.filter(slug=tp_slug).first()
+        tp = get_object_or_404(TranslationPractice, slug=tp_slug)
         shuffled_choices = [tp.answer, tp.choice_1, tp.choice_2, tp.choice_3]
         shuffle(shuffled_choices)
         ctx = {
@@ -249,7 +246,7 @@ class TranslationPracticeView(LoginRequiredMixin, View):
         return render(request, 'courses/translation_practice.html', ctx)
 
     def post(self, request, course_slug, tp_slug):
-        tp = TranslationPractice.objects.filter(slug=tp_slug).first()
+        tp = get_object_or_404(TranslationPractice, slug=tp_slug)
         user = request.user
 
         if request.POST.get('answer') == tp.answer:
@@ -279,7 +276,7 @@ class TranslationPracticeView(LoginRequiredMixin, View):
 
 class SpeakingPracticeListView(LoginRequiredMixin, View):
     def get(self, request, course_slug):
-        course = Course.objects.filter(is_active=True, slug=course_slug).first()
+        course = get_object_or_404(Course, is_active=True, slug=course_slug)
         sp_list = course.speakingpractice_set.all()
         ctx = {
             'course_slug': course_slug,
@@ -314,7 +311,7 @@ class SpeakingPracticeCreateView(LoginRequiredMixin, View):
             messages.warning(request, 'The form you have sent is not valid!')
             return render(request, 'courses/speaking_practice_create.html', ctx)
 
-        course = Course.objects.filter(is_active=True, slug=course_slug).first()
+        course = get_object_or_404(Course, is_active=True, slug=course_slug)
         sp_list = course.speakingpractice_set.all()
         ctx = {
             'course_slug': course_slug,
@@ -325,7 +322,7 @@ class SpeakingPracticeCreateView(LoginRequiredMixin, View):
 
 class SpeakingPracticeUpdateView(LoginRequiredMixin, View):
     def get(self, request, course_slug, sp_slug):
-        sp = SpeakingPractice.objects.filter(slug=sp_slug).first()
+        sp = get_object_or_404(SpeakingPractice, slug=sp_slug)
         form = forms.SpeakingPracticeCreateForm(instance=sp)
         ctx = {
             'course_slug': course_slug,
@@ -335,7 +332,7 @@ class SpeakingPracticeUpdateView(LoginRequiredMixin, View):
         return render(request, 'courses/speaking_practice_update.html', ctx)
 
     def post(self, request, course_slug, sp_slug):
-        sp = SpeakingPractice.objects.filter(slug=sp_slug).first()
+        sp = get_object_or_404(SpeakingPractice, slug=sp_slug)
         form = forms.SpeakingPracticeCreateForm(request.POST, instance=sp)
         ctx = {
             'course_slug': course_slug,
@@ -350,7 +347,7 @@ class SpeakingPracticeUpdateView(LoginRequiredMixin, View):
             messages.warning(request, 'The form you have sent is not valid!')
             return render(request, 'courses/speaking_practice_update.html', ctx)
 
-        course = Course.objects.filter(is_active=True, slug=course_slug).first()
+        course = get_object_or_404(Course, is_active=True, slug=course_slug)
         sp_list = course.speakingpractice_set.all()
         ctx = {
             'course_slug': course_slug,
@@ -364,7 +361,7 @@ class SpeakingPracticeDeleteView(LoginRequiredMixin, View):
         pass
 
     def post(self, request, course_slug, sp_slug):
-        sp = SpeakingPractice.objects.filter(slug=sp_slug).first()
+        sp = get_object_or_404(SpeakingPractice, slug=sp_slug)
 
         if sp:
             sp.delete()
@@ -372,7 +369,7 @@ class SpeakingPracticeDeleteView(LoginRequiredMixin, View):
         else:
             messages.warning(request, 'Chosen practice does not exist!')
 
-        course = Course.objects.filter(is_active=True, slug=course_slug).first()
+        course = get_object_or_404(Course, is_active=True, slug=course_slug)
         sp_list = course.speakingpractice_set.all()
         ctx = {
             'course_slug': course_slug,
@@ -383,7 +380,7 @@ class SpeakingPracticeDeleteView(LoginRequiredMixin, View):
 
 class SpeakingPracticeView(LoginRequiredMixin, View):
     def get(self, request, course_slug, sp_slug):
-        sp = SpeakingPractice.objects.filter(slug=sp_slug).first()
+        sp = get_object_or_404(SpeakingPractice, slug=sp_slug)
         ctx = {
             'course_slug': course_slug,
             'sp_slug': sp_slug,
