@@ -23,10 +23,12 @@ class Course(models.Model):
         base_slug = slugify(unidecode(self.title))[:250]  # 250 chars for title, 1 char for '-', and 4 char for number
         self.slug = base_slug
         slug_num = 1
+        course = Course.objects.filter(slug=self.slug).first()
 
-        while Course.objects.filter(slug=self.slug).exists():
+        while course and course.pk != self.pk:
             self.slug = f'{base_slug}-{slug_num}'
             slug_num += 1
+            course = Course.objects.filter(slug=self.slug).first()
 
         super().save(*args, **kwargs)
 
@@ -50,10 +52,12 @@ class TranslationPractice(models.Model):
         base_slug = slugify(unidecode(self.title))[:250]  # 250 chars for title, 1 char for '-', and 4 char for number
         self.slug = base_slug
         slug_num = 1
+        tp = TranslationPractice.objects.filter(slug=self.slug).first()
 
-        while TranslationPractice.objects.filter(slug=self.slug).exists():
+        while tp and tp.pk != self.pk:
             self.slug = f'{base_slug}-{slug_num}'
             slug_num += 1
+            tp = TranslationPractice.objects.filter(slug=self.slug).first()
 
         super().save(*args, **kwargs)
 
@@ -73,10 +77,12 @@ class SpeakingPractice(models.Model):
         base_slug = slugify(unidecode(self.title))[:250]  # 250 chars for title, 1 char for '-', and 4 char for number
         self.slug = base_slug
         slug_num = 1
+        sp = SpeakingPractice.objects.filter(slug=self.slug).first()
 
-        while SpeakingPractice.objects.filter(slug=self.slug).exists():
+        while sp and sp.pk != self.pk:
             self.slug = f'{base_slug}-{slug_num}'
             slug_num += 1
+            sp = SpeakingPractice.objects.filter(slug=self.slug).first()
 
         super().save(*args, **kwargs)
 
