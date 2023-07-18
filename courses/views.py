@@ -126,7 +126,8 @@ class TranslationPracticeListView(LoginRequiredMixin, View):
 
 class TranslationPracticeCreateView(LoginRequiredMixin, View):
     def get(self, request, course_slug):
-        form = forms.TranslationPracticeCreateForm()
+        course = get_object_or_404(Course, is_active=True, slug=course_slug)
+        form = forms.TranslationPracticeCreateForm(initial={'course': course})
         ctx = {
             'course_slug': course_slug,
             'form': form
@@ -134,7 +135,8 @@ class TranslationPracticeCreateView(LoginRequiredMixin, View):
         return render(request, 'courses/translation_practice_create.html', ctx)
 
     def post(self, request, course_slug):
-        form = forms.TranslationPracticeCreateForm(request.POST)
+        course = get_object_or_404(Course, is_active=True, slug=course_slug)
+        form = forms.TranslationPracticeCreateForm(request.POST, initial={'course': course})
         ctx = {
             'course_slug': course_slug,
             'form': form
@@ -290,7 +292,8 @@ class SpeakingPracticeListView(LoginRequiredMixin, View):
 
 class SpeakingPracticeCreateView(LoginRequiredMixin, View):
     def get(self, request, course_slug):
-        form = forms.SpeakingPracticeCreateForm()
+        course = get_object_or_404(Course, is_active=True, slug=course_slug)
+        form = forms.SpeakingPracticeCreateForm(initial={'course': course})
         ctx = {
             'course_slug': course_slug,
             'form': form
@@ -298,7 +301,8 @@ class SpeakingPracticeCreateView(LoginRequiredMixin, View):
         return render(request, 'courses/speaking_practice_create.html', ctx)
 
     def post(self, request, course_slug):
-        form = forms.SpeakingPracticeCreateForm(request.POST)
+        course = get_object_or_404(Course, is_active=True, slug=course_slug)
+        form = forms.SpeakingPracticeCreateForm(request.POST, initial={'course': course})
         ctx = {
             'course_slug': course_slug,
             'form': form
