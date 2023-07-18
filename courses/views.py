@@ -27,29 +27,25 @@ class CourseCreateView(LoginRequiredMixin, View):
         return render(request, 'courses/course_create.html', {'form': form})
 
     def post(self, request):
-        if request.user.is_moderator:
-            title = request.POST.get('title')
-            course = Course.objects.filter(title=title).first()
-            form = forms.CourseCreateForm(request.POST, request.FILES, instance=course)
+        title = request.POST.get('title')
+        course = Course.objects.filter(title=title).first()
+        form = forms.CourseCreateForm(request.POST, request.FILES, instance=course)
 
-            if course and course.is_active:
-                messages.warning(request, f'{title} course already exists!')
-                return redirect('course-list')
-            elif course and not course.is_active and form.is_valid():
-                course.is_active = True
-                form.save()
-                messages.success(request, f'{title} course has been activated!')
-                return redirect('course-list')
-
-            if form.is_valid():
-                form.save()
-                messages.success(request, 'Successfully created a course!')
-                return redirect('course-list')
-            else:
-                return render(request, 'courses/course_create.html', {'form': form})
-        else:
-            messages.warning(request, 'You are not authorized to do this!')
+        if course and course.is_active:
+            messages.warning(request, f'{title} course already exists!')
             return redirect('course-list')
+        elif course and not course.is_active and form.is_valid():
+            course.is_active = True
+            form.save()
+            messages.success(request, f'{title} course has been activated!')
+            return redirect('course-list')
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Successfully created a course!')
+            return redirect('course-list')
+        else:
+            return render(request, 'courses/course_create.html', {'form': form})
 
 
 class CourseUpdateView(LoginRequiredMixin, View):
@@ -62,24 +58,20 @@ class CourseUpdateView(LoginRequiredMixin, View):
         return render(request, 'courses/course_update.html', context=ctx)
 
     def post(self, request, course_slug):
-        if request.user.is_moderator:
-            course = Course.objects.filter(is_active=True, slug=course_slug).first()
-            form = forms.CourseCreateForm(request.POST, files=request.FILES, instance=course)
+        course = Course.objects.filter(is_active=True, slug=course_slug).first()
+        form = forms.CourseCreateForm(request.POST, files=request.FILES, instance=course)
 
-            ctx = {
-                'form': forms.CourseCreateForm(instance=course),
-                'course_slug': course_slug
-            }
+        ctx = {
+            'form': forms.CourseCreateForm(instance=course),
+            'course_slug': course_slug
+        }
 
-            if form.is_valid():
-                form.save()
-                messages.success(request, 'Successfully updated!')
-                return redirect('course-list')
-            else:
-                return render(request, 'courses/course_update.html', context=ctx)
-        else:
-            messages.warning(request, 'You are not authorized to do this!')
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Successfully updated!')
             return redirect('course-list')
+        else:
+            return render(request, 'courses/course_update.html', context=ctx)
 
 
 class CourseDeleteView(LoginRequiredMixin, View):
@@ -87,15 +79,11 @@ class CourseDeleteView(LoginRequiredMixin, View):
         pass
 
     def post(self, request, course_slug):
-        if request.user.is_moderator:
-            course = Course.objects.filter(is_active=True, slug=course_slug).first()
-            course.is_active = False
-            course.save()
-            messages.success(request, 'Successfully deleted the course!')
-            return redirect('course-list')
-        else:
-            messages.warning(request, 'You are not authorized to do this!')
-            return redirect('course-list')
+        course = Course.objects.filter(is_active=True, slug=course_slug).first()
+        course.is_active = False
+        course.save()
+        messages.success(request, 'Successfully deleted the course!')
+        return redirect('course-list')
 
 
 class PracticeCategoryView(LoginRequiredMixin, View):
