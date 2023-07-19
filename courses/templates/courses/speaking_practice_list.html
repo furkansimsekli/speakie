@@ -8,7 +8,7 @@
         <h1>Speaking Practices</h1>
         <hr>
         <div class="row">
-            {% for p in sp_list %}
+            {% for p in page_obj %}
                 <div class="col-12">
                     <div class="practice-card"
                          style="border: 1px solid #ccc; border-radius: 5px; margin-bottom: 20px; padding: 20px;">
@@ -60,5 +60,14 @@
                 </div>
             {% endfor %}
         </div>
+        {% block pagination %}
+            {% for page_number in page_obj.paginator.page_range %}
+                {% if page_obj.number == page_number %}
+                    <span>{{ page_number }}</span>
+                {% else %}
+                    <a href="{% url 'sp-list' course_slug %}?page={{ page_number }}">{{ page_number }}</a>
+                {% endif %}
+            {% endfor %}
+        {% endblock %}
     </div>
 {% endblock content %}

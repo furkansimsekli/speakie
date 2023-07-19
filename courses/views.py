@@ -2,6 +2,7 @@ from random import shuffle
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 
@@ -114,9 +115,12 @@ class TranslationPracticeListView(LoginRequiredMixin, View):
             is_solved = TranslationPracticeSolved.objects.filter(user=request.user, practice=tp).first()
             tp_list.append({'tp': tp, 'is_solved': is_solved})
 
+        page = request.GET.get('page', 1)
+        paginator = Paginator(tp_list, per_page=10)
+        page_object = paginator.get_page(page)
         ctx = {
             'course_slug': course_slug,
-            'tp_list': tp_list
+            'page_obj': page_object
         }
         return render(request, 'courses/translation_practice_list.html', ctx)
 
@@ -280,9 +284,12 @@ class SpeakingPracticeListView(LoginRequiredMixin, View):
     def get(self, request, course_slug):
         course = get_object_or_404(Course, is_active=True, slug=course_slug)
         sp_list = course.speakingpractice_set.all().order_by('difficulty')
+        page = request.GET.get('page', 1)
+        paginator = Paginator(sp_list, per_page=3)
+        page_object = paginator.get_page(page)
         ctx = {
             'course_slug': course_slug,
-            'sp_list': sp_list
+            'page_obj': page_object
         }
         return render(request, 'courses/speaking_practice_list.html', ctx)
 
