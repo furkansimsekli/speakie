@@ -15,7 +15,8 @@ class HomeView(View):
             'course_count': course_count,
             'tp_count': tp_count,
             'sp_count': sp_count,
-            'leaderboard': leaderboard
+            'leaderboard': leaderboard,
+            'title': 'Home'
         }
         return render(request, 'base/home.html', ctx)
 
@@ -25,7 +26,7 @@ class HomeView(View):
 
 class AboutView(View):
     def get(self, request):
-        return render(request, 'base/about.html')
+        return render(request, 'base/about.html', {'title': 'About'})
 
     def post(self, request):
         pass

@@ -15,7 +15,8 @@ from .models import Course, TranslationPractice, SpeakingPractice, TranslationPr
 class CourseListView(View):
     def get(self, request):
         ctx = {
-            'courses': Course.objects.filter(is_active=True).order_by('title', 'id')
+            'courses': Course.objects.filter(is_active=True).order_by('title', 'id'),
+            'title': 'Courses'
         }
         return render(request, 'courses/course_list.html', ctx)
 
@@ -26,7 +27,7 @@ class CourseListView(View):
 class CourseCreateView(LoginRequiredMixin, View):
     def get(self, request):
         form = forms.CourseCreateForm()
-        return render(request, 'courses/course_create.html', {'form': form})
+        return render(request, 'courses/course_create.html', {'form': form, 'title': 'New Course'})
 
     def post(self, request):
         form = forms.CourseCreateForm(request.POST, request.FILES)
@@ -49,7 +50,7 @@ class CourseCreateView(LoginRequiredMixin, View):
         else:
             messages.warning(request, 'The form you have sent is not valid!')
 
-        return render(request, 'courses/course_create.html', {'form': form})
+        return render(request, 'courses/course_create.html', {'form': form, 'title': 'New Course'})
 
 
 class CourseUpdateView(LoginRequiredMixin, View):
@@ -57,23 +58,26 @@ class CourseUpdateView(LoginRequiredMixin, View):
         course = get_object_or_404(Course, is_active=True, slug=course_slug)
         ctx = {
             'form': forms.CourseCreateForm(instance=course),
-            'course_slug': course_slug
+            'course_slug': course_slug,
+            'title': 'Update Course'
         }
         return render(request, 'courses/course_update.html', context=ctx)
 
     def post(self, request, course_slug):
         course = get_object_or_404(Course, is_active=True, slug=course_slug)
         form = forms.CourseCreateForm(request.POST, files=request.FILES, instance=course)
-        ctx = {
-            'form': forms.CourseCreateForm(instance=course),
-            'course_slug': course_slug
-        }
 
         if form.is_valid():
             form.save()
             messages.success(request, 'Successfully updated!')
             return redirect('course-list')
         else:
+            ctx = {
+                'form': forms.CourseCreateForm(instance=course),
+                'course_slug': course_slug,
+                'title': 'Update Course'
+            }
+            messages.warning(request, 'The form you have sent is not valid!')
             return render(request, 'courses/course_update.html', context=ctx)
 
 
@@ -97,7 +101,8 @@ class PracticeCategoryView(LoginRequiredMixin, View):
         ctx = {
             'course': course,
             'tp_count': tp_count,
-            'sp_count': sp_count
+            'sp_count': sp_count,
+            'title': 'Categories'
         }
         return render(request, 'courses/practice_category.html', ctx)
 
@@ -120,7 +125,8 @@ class TranslationPracticeListView(LoginRequiredMixin, View):
         page_object = paginator.get_page(page)
         ctx = {
             'course_slug': course_slug,
-            'page_obj': page_object
+            'page_obj': page_object,
+            'title': 'TP List'
         }
         return render(request, 'courses/translation_practice_list.html', ctx)
 
@@ -134,22 +140,24 @@ class TranslationPracticeCreateView(LoginRequiredMixin, View):
         form = forms.TranslationPracticeCreateForm(initial={'course': course})
         ctx = {
             'course_slug': course_slug,
-            'form': form
+            'form': form,
+            'title': 'New TP'
         }
         return render(request, 'courses/translation_practice_create.html', ctx)
 
     def post(self, request, course_slug):
         course = get_object_or_404(Course, is_active=True, slug=course_slug)
         form = forms.TranslationPracticeCreateForm(request.POST, initial={'course': course})
-        ctx = {
-            'course_slug': course_slug,
-            'form': form
-        }
 
         if form.is_valid():
             form.save()
             messages.success(request, 'New translation practice has been added to inventory!')
         else:
+            ctx = {
+                'course_slug': course_slug,
+                'form': form,
+                'title': 'New TP'
+            }
             messages.warning(request, 'The form you have sent is not valid!')
             return render(request, 'courses/translation_practice_create.html', ctx)
 
@@ -163,23 +171,25 @@ class TranslationPracticeUpdateView(LoginRequiredMixin, View):
         ctx = {
             'course_slug': course_slug,
             'tp_slug': tp_slug,
-            'form': form
+            'form': form,
+            'title': 'Update TP'
         }
         return render(request, 'courses/translation_practice_update.html', ctx)
 
     def post(self, request, course_slug, tp_slug):
         tp = get_object_or_404(TranslationPractice, slug=tp_slug)
         form = forms.TranslationPracticeCreateForm(request.POST, instance=tp)
-        ctx = {
-            'course_slug': course_slug,
-            'tp_slug': tp_slug,
-            'form': form
-        }
 
         if form.is_valid():
             form.save()
             messages.success(request, 'Practice has been updated!')
         else:
+            ctx = {
+                'course_slug': course_slug,
+                'tp_slug': tp_slug,
+                'form': form,
+                'title': 'Update TP'
+            }
             messages.warning(request, 'The form you have sent is not valid!')
             return render(request, 'courses/translation_practice_update.html', ctx)
 
@@ -214,7 +224,8 @@ class TranslationPracticeView(LoginRequiredMixin, View):
             'tp': tp,
             'choices': shuffled_choices,
             'prev_tp': prev_tp,
-            'next_tp': next_tp
+            'next_tp': next_tp,
+            'title': 'TP'
         }
         return render(request, 'courses/translation_practice.html', ctx)
 
@@ -245,7 +256,8 @@ class TranslationPracticeView(LoginRequiredMixin, View):
             'tp': tp,
             'choices': shuffled_choices,
             'prev_tp': prev_tp,
-            'next_tp': next_tp
+            'next_tp': next_tp,
+            'title': 'TP'
         }
         return render(request, 'courses/translation_practice.html', ctx)
 
@@ -273,7 +285,8 @@ class SpeakingPracticeListView(LoginRequiredMixin, View):
         page_object = paginator.get_page(page)
         ctx = {
             'course_slug': course_slug,
-            'page_obj': page_object
+            'page_obj': page_object,
+            'title': 'SP List'
         }
         return render(request, 'courses/speaking_practice_list.html', ctx)
 
@@ -287,22 +300,24 @@ class SpeakingPracticeCreateView(LoginRequiredMixin, View):
         form = forms.SpeakingPracticeCreateForm(initial={'course': course})
         ctx = {
             'course_slug': course_slug,
-            'form': form
+            'form': form,
+            'title': 'New SP'
         }
         return render(request, 'courses/speaking_practice_create.html', ctx)
 
     def post(self, request, course_slug):
         course = get_object_or_404(Course, is_active=True, slug=course_slug)
         form = forms.SpeakingPracticeCreateForm(request.POST, initial={'course': course})
-        ctx = {
-            'course_slug': course_slug,
-            'form': form
-        }
 
         if form.is_valid():
             form.save()
             messages.success(request, 'New speaking practice has been added to inventory!')
         else:
+            ctx = {
+                'course_slug': course_slug,
+                'form': form,
+                'title': 'New SP'
+            }
             messages.warning(request, 'The form you have sent is not valid!')
             return render(request, 'courses/speaking_practice_create.html', ctx)
 
@@ -316,23 +331,25 @@ class SpeakingPracticeUpdateView(LoginRequiredMixin, View):
         ctx = {
             'course_slug': course_slug,
             'sp_slug': sp_slug,
-            'form': form
+            'form': form,
+            'title': 'Update SP'
         }
         return render(request, 'courses/speaking_practice_update.html', ctx)
 
     def post(self, request, course_slug, sp_slug):
         sp = get_object_or_404(SpeakingPractice, slug=sp_slug)
         form = forms.SpeakingPracticeCreateForm(request.POST, instance=sp)
-        ctx = {
-            'course_slug': course_slug,
-            'sp_slug': sp_slug,
-            'form': form
-        }
 
         if form.is_valid():
             form.save()
             messages.success(request, 'Practice has been updated!')
         else:
+            ctx = {
+                'course_slug': course_slug,
+                'sp_slug': sp_slug,
+                'form': form,
+                'title': 'Update SP'
+            }
             messages.warning(request, 'The form you have sent is not valid!')
             return render(request, 'courses/speaking_practice_update.html', ctx)
 
@@ -364,7 +381,8 @@ class SpeakingPracticeView(LoginRequiredMixin, View):
             'sp_slug': sp_slug,
             'sp': sp,
             'prev_sp': prev_sp,
-            'next_sp': next_sp
+            'next_sp': next_sp,
+            'title': 'SP'
         }
         return render(request, 'courses/speaking_practice.html', ctx)
 
