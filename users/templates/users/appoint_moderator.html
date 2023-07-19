@@ -1,0 +1,58 @@
+{% extends "base/base.html" %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <div class="container">
+        <h2>Student List</h2>
+        <hr>
+        <div class="row">
+            {% for student in page_obj %}
+                <div class="col-12">
+                    <div class="student-card"
+                         style="border: 1px solid #ccc; border-radius: 5px; margin-bottom: 20px; padding: 20px;">
+                        <h3><i class="bi bi-person"></i> {{ student.username }}</h3>
+                        <button type="button" class="btn btn-warning" data-toggle="modal"
+                                data-target="#appointModal{{ student.id }}">Appoint
+                        </button>
+
+                        <!-- MODAL -->
+                        <div class="modal" id="appointModal{{ student.id }}">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Appoint as Moderator</h4>
+                                        <button type="button" class="close" data-dismiss="modal">&times;
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to appoint {{ student.username }} as moderator? Moderators
+                                        can create new course and practices, they also can delete and update existing
+                                        course and practices!
+                                    </div>
+                                    <div class="modal-footer">
+                                        <form action="{% url 'appoint-moderator' %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" id="new_mod_id" name="new_mod_id"
+                                                   value="{{ student.id }}">
+                                            <button type="submit" class="btn btn-danger">
+                                                Confirm
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% block pagination %}
+            {% for page_number in page_obj.paginator.page_range %}
+                {% if page_obj.number == page_number %}
+                    <span>{{ page_number }}</span>
+                {% else %}
+                    <a href="{% url 'appoint-moderator' %}?page={{ page_number }}">{{ page_number }}</a>
+                {% endif %}
+            {% endfor %}
+        {% endblock %}
+    </div>
+{% endblock content %}

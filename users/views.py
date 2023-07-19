@@ -1,9 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect
+from django.core.paginator import Paginator
+from django.shortcuts import render, redirect, get_list_or_404, get_object_or_404
 from django.views import View
 
 from . import forms
+from .models import User
 
 
 class RegisterView(View):
@@ -67,3 +69,20 @@ class ProfileView(View):
             return redirect('profile')
 
         return render(request, 'users/profile.html', {'form': form})
+
+
+class AppointModeratorView(View):
+    def get(self, request):
+        students = get_list_or_404(User, is_moderator=False)
+        page = request.GET.get('page', 1)
+        paginator = Paginator(students, per_page=10)
+        page_object = paginator.get_page(page)
+        return render(request, 'users/appoint_moderator.html', {'page_obj': page_object})
+
+    def post(self, request):
+        new_mod_id = request.POST.get('new_mod_id')
+        user = get_object_or_404(User, id=new_mod_id)
+        user.is_moderator = True
+        user.save()
+        messages.success(request, f'{user.username} has been appointed as moderator!')
+        return redirect('appoint-moderator')

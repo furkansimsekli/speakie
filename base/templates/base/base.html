@@ -40,6 +40,7 @@
                     {% if user.is_authenticated %}
                         {% if user.is_moderator %}
                             <a class="nav-item nav-link" href="{% url 'course-create' %}">New Course</a>
+                            <a class="nav-item nav-link" href="{% url 'appoint-moderator' %}">Appoint Moderators</a>
                         {% endif %}
                         <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
                         <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
