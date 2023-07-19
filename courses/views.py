@@ -207,11 +207,14 @@ class TranslationPracticeView(LoginRequiredMixin, View):
         tp = get_object_or_404(TranslationPractice, slug=tp_slug)
         shuffled_choices = [tp.answer, tp.choice_1, tp.choice_2, tp.choice_3]
         shuffle(shuffled_choices)
+        prev_tp, next_tp = self.find_prev_and_next(tp)
         ctx = {
             'course_slug': course_slug,
             'tp_slug': tp_slug,
             'tp': tp,
-            'choices': shuffled_choices
+            'choices': shuffled_choices,
+            'prev_tp': prev_tp,
+            'next_tp': next_tp
         }
         return render(request, 'courses/translation_practice.html', ctx)
 
@@ -235,13 +238,30 @@ class TranslationPracticeView(LoginRequiredMixin, View):
 
         shuffled_choices = [tp.answer, tp.choice_1, tp.choice_2, tp.choice_3]
         shuffle(shuffled_choices)
+        prev_tp, next_tp = self.find_prev_and_next(tp)
         ctx = {
             'course_slug': course_slug,
             'tp_slug': tp_slug,
             'tp': tp,
-            'choices': shuffled_choices
+            'choices': shuffled_choices,
+            'prev_tp': prev_tp,
+            'next_tp': next_tp
         }
         return render(request, 'courses/translation_practice.html', ctx)
+
+    @staticmethod
+    def find_prev_and_next(tp):
+        practices = tp.course.translationpractice_set.all().order_by('difficulty', 'id')
+        practice_count = practices.count()
+        practices = list(practices)
+        current_index = practices.index(tp)
+
+        previous_index = current_index - 1 if current_index > 0 else None
+        next_index = current_index + 1 if current_index < practice_count - 1 else None
+
+        prev_tp = practices[previous_index] if previous_index is not None else None
+        next_tp = practices[next_index] if next_index is not None else None
+        return prev_tp, next_tp
 
 
 class SpeakingPracticeListView(LoginRequiredMixin, View):
@@ -338,13 +358,30 @@ class SpeakingPracticeDeleteView(LoginRequiredMixin, View):
 class SpeakingPracticeView(LoginRequiredMixin, View):
     def get(self, request, course_slug, sp_slug):
         sp = get_object_or_404(SpeakingPractice, slug=sp_slug)
+        prev_sp, next_sp = self.find_prev_and_next(sp)
         ctx = {
             'course_slug': course_slug,
             'sp_slug': sp_slug,
-            'sp': sp
+            'sp': sp,
+            'prev_sp': prev_sp,
+            'next_sp': next_sp
         }
         return render(request, 'courses/speaking_practice.html', ctx)
 
     def post(self, request, course_slug, sp_slug):
         # TODO: Implement scoring mechanism
         pass
+
+    @staticmethod
+    def find_prev_and_next(sp):
+        practices = sp.course.speakingpractice_set.all().order_by('difficulty', 'id')
+        practice_count = practices.count()
+        practices = list(practices)
+        current_index = practices.index(sp)
+
+        previous_index = current_index - 1 if current_index > 0 else None
+        next_index = current_index + 1 if current_index < practice_count - 1 else None
+
+        prev_sp = practices[previous_index] if previous_index is not None else None
+        next_sp = practices[next_index] if next_index is not None else None
+        return prev_sp, next_sp

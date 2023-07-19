@@ -1,6 +1,8 @@
 {% extends "base/base.html" %}
 {% block content %}
     <div class="container">
+        <a type="button" class="btn btn-primary" style="margin-bottom: 20px;" href="{% url 'sp-list' course_slug %}">Go
+            to Practice List</a>
         <h2>{{ sp.title }}</h2>
         <hr>
 
@@ -25,5 +27,18 @@
             <!-- Submit button -->
             <button type="submit" class="btn btn-primary btn-block mb-4">Submit</button>
         </form>
+
+        {% if prev_sp %}
+            <a href="{% url 'sp' course_slug=course_slug sp_slug=prev_sp.slug %}"
+               class="btn btn-primary mb-4">Previous</a>
+        {% else %}
+            <button class="btn btn-primary mb-4" disabled>Previous</button>
+        {% endif %}
+
+        {% if next_sp %}
+            <a href="{% url 'sp' course_slug=course_slug sp_slug=next_sp.slug %}" class="btn btn-primary mb-4">Next</a>
+        {% else %}
+            <button class="btn btn-primary mb-4" disabled>Next</button>
+        {% endif %}
     </div>
 {% endblock content %}
