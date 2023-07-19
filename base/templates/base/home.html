@@ -1,0 +1,86 @@
+{% extends "base/base.html" %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            text-align: left;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #555;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+    </style>
+
+    <div class="container justify-content-center">
+        <h2>Speakie: Future of Learning Languages</h2>
+        <hr>
+        <div>
+            <h3>- Total of {{ course_count }} courses!</h3>
+            <h3>- Total of {{ sp_count }} speaking practices!</h3>
+            <h3 style="margin-bottom: 100px">- Total of {{ tp_count }} text-to-text translation practices!</h3>
+        </div>
+        <div>
+            <h1>Leaderboard</h1>
+            <table>
+                <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Username</th>
+                    <th>Score</th>
+                    <th>Level</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for user in leaderboard %}
+                    <tr>
+                        <td><img src="{{ user.profile_picture.url }}" alt=""></td>
+                        {% if forloop.counter == 1 %}
+                            <td style="color: #ffd700"><strong>{{ user.username }}</strong></td>
+                        {% elif forloop.counter == 2 %}
+                            <td style="color: #a9a9a9"><strong>{{ user.username }}</strong></td>
+                        {% elif forloop.counter == 3 %}
+                            <td style="color: #cd7f32"><strong>{{ user.username }}</strong></td>
+                        {% else %}
+                            <td>{{ user.username }}</td>
+                        {% endif %}
+                        <td>{{ user.score }}</td>
+                        <td>{{ user.level }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock content %}

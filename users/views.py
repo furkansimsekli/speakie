@@ -40,7 +40,7 @@ class LoginView(View):
             if user is not None:
                 login(request, user)
                 messages.success(request, 'Login successful!')
-                return redirect('course-list')  # TODO: redirect to landing page
+                return redirect('home')
 
         messages.warning(request,
                          'Given username or password does not belong to a user, please make sure they are correct!')
@@ -50,7 +50,7 @@ class LoginView(View):
 class LogoutView(View):
     def get(self, request):
         logout(request)
-        return redirect('course-list')  # TODO: redirect to landing page
+        return redirect('home')
 
 
 class ProfileView(View):
