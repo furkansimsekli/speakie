@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.views import View
 
 from . import forms
@@ -36,7 +37,6 @@ class CourseCreateView(LoginRequiredMixin, View):
 
             if course and course.is_active:
                 messages.warning(request, f'{title} course already exists!')
-                return redirect('course-list')
             elif course and not course.is_active:
                 course.is_active = True
                 form.save()
@@ -153,19 +153,7 @@ class TranslationPracticeCreateView(LoginRequiredMixin, View):
             messages.warning(request, 'The form you have sent is not valid!')
             return render(request, 'courses/translation_practice_create.html', ctx)
 
-        course = get_object_or_404(Course, is_active=True, slug=course_slug)
-        translation_practices = course.translationpractice_set.all()
-        tp_list = []
-
-        for tp in translation_practices:
-            is_solved = TranslationPracticeSolved.objects.filter(user=request.user, practice=tp).first()
-            tp_list.append({'tp': tp, 'is_solved': is_solved})
-
-        ctx = {
-            'course_slug': course_slug,
-            'tp_list': tp_list
-        }
-        return render(request, 'courses/translation_practice_list.html', ctx)
+        return redirect(reverse('tp-list', kwargs={'course_slug': course_slug}))
 
 
 class TranslationPracticeUpdateView(LoginRequiredMixin, View):
@@ -195,19 +183,7 @@ class TranslationPracticeUpdateView(LoginRequiredMixin, View):
             messages.warning(request, 'The form you have sent is not valid!')
             return render(request, 'courses/translation_practice_update.html', ctx)
 
-        course = get_object_or_404(Course, is_active=True, slug=course_slug)
-        translation_practices = course.translationpractice_set.all()
-        tp_list = []
-
-        for tp in translation_practices:
-            is_solved = TranslationPracticeSolved.objects.filter(user=request.user, practice=tp).first()
-            tp_list.append({'tp': tp, 'is_solved': is_solved})
-
-        ctx = {
-            'course_slug': course_slug,
-            'tp_list': tp_list
-        }
-        return render(request, 'courses/translation_practice_list.html', ctx)
+        return redirect(reverse('tp-list', kwargs={'course_slug': course_slug}))
 
 
 class TranslationPracticeDeleteView(LoginRequiredMixin, View):
@@ -223,19 +199,7 @@ class TranslationPracticeDeleteView(LoginRequiredMixin, View):
         else:
             messages.warning(request, 'Chosen practice does not exist!')
 
-        course = get_object_or_404(Course, is_active=True, slug=course_slug)
-        translation_practices = course.translationpractice_set.all()
-        tp_list = []
-
-        for tp in translation_practices:
-            is_solved = TranslationPracticeSolved.objects.filter(user=request.user, practice=tp).first()
-            tp_list.append({'tp': tp, 'is_solved': is_solved})
-
-        ctx = {
-            'course_slug': course_slug,
-            'tp_list': tp_list
-        }
-        return render(request, 'courses/translation_practice_list.html', ctx)
+        return redirect(reverse('tp-list', kwargs={'course_slug': course_slug}))
 
 
 class TranslationPracticeView(LoginRequiredMixin, View):
@@ -322,13 +286,7 @@ class SpeakingPracticeCreateView(LoginRequiredMixin, View):
             messages.warning(request, 'The form you have sent is not valid!')
             return render(request, 'courses/speaking_practice_create.html', ctx)
 
-        course = get_object_or_404(Course, is_active=True, slug=course_slug)
-        sp_list = course.speakingpractice_set.all()
-        ctx = {
-            'course_slug': course_slug,
-            'sp_list': sp_list
-        }
-        return render(request, 'courses/speaking_practice_list.html', ctx)
+        return redirect(reverse('sp-list', kwargs={'course_slug': course_slug}))
 
 
 class SpeakingPracticeUpdateView(LoginRequiredMixin, View):
@@ -358,13 +316,7 @@ class SpeakingPracticeUpdateView(LoginRequiredMixin, View):
             messages.warning(request, 'The form you have sent is not valid!')
             return render(request, 'courses/speaking_practice_update.html', ctx)
 
-        course = get_object_or_404(Course, is_active=True, slug=course_slug)
-        sp_list = course.speakingpractice_set.all()
-        ctx = {
-            'course_slug': course_slug,
-            'sp_list': sp_list
-        }
-        return render(request, 'courses/speaking_practice_list.html', ctx)
+        return redirect(reverse('sp-list', kwargs={'course_slug': course_slug}))
 
 
 class SpeakingPracticeDeleteView(LoginRequiredMixin, View):
@@ -380,13 +332,7 @@ class SpeakingPracticeDeleteView(LoginRequiredMixin, View):
         else:
             messages.warning(request, 'Chosen practice does not exist!')
 
-        course = get_object_or_404(Course, is_active=True, slug=course_slug)
-        sp_list = course.speakingpractice_set.all()
-        ctx = {
-            'course_slug': course_slug,
-            'sp_list': sp_list
-        }
-        return render(request, 'courses/speaking_practice_list.html', ctx)
+        return redirect(reverse('sp-list', kwargs={'course_slug': course_slug}))
 
 
 class SpeakingPracticeView(LoginRequiredMixin, View):
