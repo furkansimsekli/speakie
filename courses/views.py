@@ -15,7 +15,7 @@ from .models import Course, TranslationPractice, SpeakingPractice, TranslationPr
 class CourseListView(View):
     def get(self, request):
         ctx = {
-            'courses': Course.objects.filter(is_active=True).order_by('title')
+            'courses': Course.objects.filter(is_active=True).order_by('title', 'id')
         }
         return render(request, 'courses/course_list.html', ctx)
 
@@ -108,7 +108,7 @@ class PracticeCategoryView(LoginRequiredMixin, View):
 class TranslationPracticeListView(LoginRequiredMixin, View):
     def get(self, request, course_slug):
         course = get_object_or_404(Course, is_active=True, slug=course_slug)
-        translation_practices = course.translationpractice_set.all().order_by('difficulty')
+        translation_practices = course.translationpractice_set.all().order_by('difficulty', 'id')
         tp_list = []
 
         for tp in translation_practices:
@@ -247,7 +247,7 @@ class TranslationPracticeView(LoginRequiredMixin, View):
 class SpeakingPracticeListView(LoginRequiredMixin, View):
     def get(self, request, course_slug):
         course = get_object_or_404(Course, is_active=True, slug=course_slug)
-        sp_list = course.speakingpractice_set.all().order_by('difficulty')
+        sp_list = course.speakingpractice_set.all().order_by('difficulty', 'id')
         page = request.GET.get('page', 1)
         paginator = Paginator(sp_list, per_page=3)
         page_object = paginator.get_page(page)
