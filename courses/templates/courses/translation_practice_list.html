@@ -68,9 +68,10 @@
         {% block pagination %}
             {% for page_number in page_obj.paginator.page_range %}
                 {% if page_obj.number == page_number %}
-                    <span>{{ page_number }}</span>
+                    <span class="btn btn-light" style="cursor: default">{{ page_number }}</span>
                 {% else %}
-                    <a href="{% url 'tp-list' course_slug %}?page={{ page_number }}">{{ page_number }}</a>
+                    <a class="btn btn-dark"
+                       href="{% url 'tp-list' course_slug %}?page={{ page_number }}">{{ page_number }}</a>
                 {% endif %}
             {% endfor %}
         {% endblock %}
