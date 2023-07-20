@@ -96,3 +96,11 @@ class TranslationPracticeSolved(models.Model):
 
     class Meta:
         unique_together = ('user', 'practice')
+
+
+class SpeakingPracticeSolved(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    practice = models.ForeignKey(SpeakingPractice, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user', 'practice')

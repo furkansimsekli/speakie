@@ -12,27 +12,32 @@
                 <div class="col-12">
                     <div class="practice-card"
                          style="border: 1px solid #ccc; border-radius: 5px; margin-bottom: 20px; padding: 20px;">
-                        <h3>{{ p.title }}</h3>
 
-                        {% if p.difficulty == 1 %}
+                        {% if p.is_solved %}
+                            <h3><i class="bi bi-check-circle text-success"></i> {{ p.sp.title }}</h3>
+                        {% else %}
+                            <h3><i class="bi bi-circle"></i> {{ p.sp.title }}</h3>
+                        {% endif %}
+
+                        {% if p.sp.difficulty == 1 %}
                             <p>Difficulty: Easy</p>
-                        {% elif p.difficulty == 2 %}
+                        {% elif p.sp.difficulty == 2 %}
                             <p>Difficulty: Intermediate</p>
-                        {% elif p.difficulty == 3 %}
+                        {% elif p.sp.difficulty == 3 %}
                             <p>Difficulty: Hard</p>
                         {% endif %}
 
-                        <a href="{% url 'sp' p.course.slug p.slug %}" class="btn btn-primary">Start Practice</a>
+                        <a href="{% url 'sp' p.sp.course.slug p.sp.slug %}" class="btn btn-primary">Start Practice</a>
                         {% if user.is_moderator %}
-                            <a href="{% url 'sp-update' p.course.slug p.slug %}"
+                            <a href="{% url 'sp-update' p.sp.course.slug p.sp.slug %}"
                                class="btn btn-secondary">Update</a>
                             <button type="button" class="btn btn-danger" data-toggle="modal"
-                                    data-target="#deleteModal{{ p.id }}">
+                                    data-target="#deleteModal{{ p.sp.id }}">
                                 Delete
                             </button>
 
                             <!-- MODAL -->
-                            <div class="modal" id="deleteModal{{ p.id }}">
+                            <div class="modal" id="deleteModal{{ p.sp.id }}">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -44,7 +49,7 @@
                                             Are you sure you want to delete this practice?
                                         </div>
                                         <div class="modal-footer">
-                                            <form action="{% url 'sp-delete' p.course.slug p.slug %}"
+                                            <form action="{% url 'sp-delete' p.sp.course.slug p.sp.slug %}"
                                                   method="POST">
                                                 {% csrf_token %}
                                                 <button type="submit" class="btn btn-danger">

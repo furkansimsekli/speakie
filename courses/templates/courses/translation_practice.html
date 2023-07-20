@@ -3,7 +3,11 @@
     <div class="container">
         <a type="button" class="btn btn-primary" style="margin-bottom: 20px;" href="{% url 'tp-list' course_slug %}">Go
             to Practice List</a>
-        <h2>{{ tp.title }}</h2>
+        {% if is_solved %}
+            <h2><i class="bi bi-check-circle text-success"></i> {{ tp.title }}</h2>
+        {% else %}
+            <h2><i class="bi bi-circle"></i> {{ tp.title }}</h2>
+        {% endif %}
         <hr>
 
         {% if tp.difficulty == 1 %}

@@ -3,13 +3,14 @@ from random import shuffle
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views import View
 
 from . import forms
 from .constants import TRANSLATION_PRACTICE_COEFFICIENT
-from .models import Course, TranslationPractice, SpeakingPractice, TranslationPracticeSolved
+from .models import Course, TranslationPractice, SpeakingPractice, TranslationPracticeSolved, SpeakingPracticeSolved
 
 
 class CourseListView(View):
@@ -218,6 +219,7 @@ class TranslationPracticeView(LoginRequiredMixin, View):
         shuffled_choices = [tp.answer, tp.choice_1, tp.choice_2, tp.choice_3]
         shuffle(shuffled_choices)
         prev_tp, next_tp = self.find_prev_and_next(tp)
+        is_solved = TranslationPracticeSolved.objects.filter(user=request.user, practice=tp).first()
         ctx = {
             'course_slug': course_slug,
             'tp_slug': tp_slug,
@@ -225,6 +227,7 @@ class TranslationPracticeView(LoginRequiredMixin, View):
             'choices': shuffled_choices,
             'prev_tp': prev_tp,
             'next_tp': next_tp,
+            'is_solved': is_solved,
             'title': 'TP'
         }
         return render(request, 'courses/translation_practice.html', ctx)
@@ -247,19 +250,7 @@ class TranslationPracticeView(LoginRequiredMixin, View):
         else:
             messages.warning(request, f'WRONG! Correct answer: {tp.answer}')
 
-        shuffled_choices = [tp.answer, tp.choice_1, tp.choice_2, tp.choice_3]
-        shuffle(shuffled_choices)
-        prev_tp, next_tp = self.find_prev_and_next(tp)
-        ctx = {
-            'course_slug': course_slug,
-            'tp_slug': tp_slug,
-            'tp': tp,
-            'choices': shuffled_choices,
-            'prev_tp': prev_tp,
-            'next_tp': next_tp,
-            'title': 'TP'
-        }
-        return render(request, 'courses/translation_practice.html', ctx)
+        return redirect(reverse('tp', kwargs={'course_slug': course_slug, 'tp_slug': tp_slug}))
 
     @staticmethod
     def find_prev_and_next(tp):
@@ -279,7 +270,13 @@ class TranslationPracticeView(LoginRequiredMixin, View):
 class SpeakingPracticeListView(LoginRequiredMixin, View):
     def get(self, request, course_slug):
         course = get_object_or_404(Course, is_active=True, slug=course_slug)
-        sp_list = course.speakingpractice_set.all().order_by('difficulty', 'id')
+        speaking_practices = course.speakingpractice_set.all().order_by('difficulty', 'id')
+        sp_list = []
+
+        for sp in speaking_practices:
+            is_solved = SpeakingPracticeSolved.objects.filter(user=request.user, practice=sp).first()
+            sp_list.append({'sp': sp, 'is_solved': is_solved})
+
         page = request.GET.get('page', 1)
         paginator = Paginator(sp_list, per_page=3)
         page_object = paginator.get_page(page)
@@ -376,19 +373,21 @@ class SpeakingPracticeView(LoginRequiredMixin, View):
     def get(self, request, course_slug, sp_slug):
         sp = get_object_or_404(SpeakingPractice, slug=sp_slug)
         prev_sp, next_sp = self.find_prev_and_next(sp)
+        is_solved = SpeakingPracticeSolved.objects.filter(user=request.user, practice=sp).first()
         ctx = {
             'course_slug': course_slug,
             'sp_slug': sp_slug,
             'sp': sp,
             'prev_sp': prev_sp,
             'next_sp': next_sp,
+            'is_solved': is_solved,
             'title': 'SP'
         }
         return render(request, 'courses/speaking_practice.html', ctx)
 
     def post(self, request, course_slug, sp_slug):
         # TODO: Implement scoring mechanism
-        pass
+        return HttpResponse("Work in progress...")
 
     @staticmethod
     def find_prev_and_next(sp):

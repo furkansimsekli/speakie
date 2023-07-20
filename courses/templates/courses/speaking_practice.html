@@ -3,7 +3,11 @@
     <div class="container">
         <a type="button" class="btn btn-primary" style="margin-bottom: 20px;" href="{% url 'sp-list' course_slug %}">Go
             to Practice List</a>
-        <h2>{{ sp.title }}</h2>
+        {% if is_solved %}
+            <h2><i class="bi bi-check-circle text-success"></i> {{ sp.title }}</h2>
+        {% else %}
+            <h2><i class="bi bi-circle"></i> {{ sp.title }}</h2>
+        {% endif %}
         <hr>
 
         <p>{{ sp.paragraph }}</p>
