@@ -6,6 +6,7 @@ from django.db import models
 
 
 class User(AbstractUser):
+    email = models.EmailField(unique=True)
     bio = models.TextField(default='', max_length=255)
     profile_picture = models.ImageField(default='default_profile_pic.jpg', upload_to='profile_pictures/')
     score = models.PositiveIntegerField(default=1)
