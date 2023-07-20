@@ -10,7 +10,7 @@ class HomeView(View):
         course_count = Course.objects.filter(is_active=True).count()
         tp_count = TranslationPractice.objects.all().count()
         sp_count = SpeakingPractice.objects.all().count()
-        leaderboard = User.objects.all().order_by('-score')
+        leaderboard = User.objects.all().order_by('-score', 'id')
         ctx = {
             'course_count': course_count,
             'tp_count': tp_count,
