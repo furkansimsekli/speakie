@@ -254,16 +254,10 @@ class TranslationPracticeView(LoginRequiredMixin, View):
 
     @staticmethod
     def find_prev_and_next(tp):
-        practices = tp.course.translationpractice_set.all().order_by('difficulty', 'id')
-        practice_count = practices.count()
-        practices = list(practices)
-        current_index = practices.index(tp)
-
-        previous_index = current_index - 1 if current_index > 0 else None
-        next_index = current_index + 1 if current_index < practice_count - 1 else None
-
-        prev_tp = practices[previous_index] if previous_index is not None else None
-        next_tp = practices[next_index] if next_index is not None else None
+        prev_tp = TranslationPractice.objects.filter(course=tp.course, difficulty__lte=tp.difficulty).filter(
+            id__lt=tp.id).order_by('-difficulty', '-id').first()
+        next_tp = TranslationPractice.objects.filter(course=tp.course, difficulty__gte=tp.difficulty).filter(
+            id__gt=tp.id).order_by('difficulty', 'id').first()
         return prev_tp, next_tp
 
 
@@ -391,14 +385,8 @@ class SpeakingPracticeView(LoginRequiredMixin, View):
 
     @staticmethod
     def find_prev_and_next(sp):
-        practices = sp.course.speakingpractice_set.all().order_by('difficulty', 'id')
-        practice_count = practices.count()
-        practices = list(practices)
-        current_index = practices.index(sp)
-
-        previous_index = current_index - 1 if current_index > 0 else None
-        next_index = current_index + 1 if current_index < practice_count - 1 else None
-
-        prev_sp = practices[previous_index] if previous_index is not None else None
-        next_sp = practices[next_index] if next_index is not None else None
-        return prev_sp, next_sp
+        prev_tp = SpeakingPractice.objects.filter(course=sp.course, difficulty__lte=sp.difficulty).filter(
+            id__lt=sp.id).order_by('-difficulty', '-id').first()
+        next_tp = SpeakingPractice.objects.filter(course=sp.course, difficulty__gte=sp.difficulty).filter(
+            id__gt=sp.id).order_by('difficulty', 'id').first()
+        return prev_tp, next_tp
