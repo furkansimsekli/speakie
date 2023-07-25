@@ -3,10 +3,12 @@ from random import shuffle
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
 from . import forms
 from .constants import TRANSLATION_PRACTICE_COEFFICIENT
@@ -215,19 +217,9 @@ class TranslationPracticeDeleteView(LoginRequiredMixin, View):
 
 class TranslationPracticeView(LoginRequiredMixin, View):
     def get(self, request, course_slug, tp_slug):
-        tp = get_object_or_404(TranslationPractice, slug=tp_slug)
-        shuffled_choices = [tp.answer, tp.choice_1, tp.choice_2, tp.choice_3]
-        shuffle(shuffled_choices)
-        prev_tp, next_tp = self.find_prev_and_next(tp)
-        is_solved = TranslationPracticeSolved.objects.filter(user=request.user, practice=tp).first()
         ctx = {
             'course_slug': course_slug,
             'tp_slug': tp_slug,
-            'tp': tp,
-            'choices': shuffled_choices,
-            'prev_tp': prev_tp,
-            'next_tp': next_tp,
-            'is_solved': is_solved,
             'title': 'TP'
         }
         return render(request, 'courses/translation_practice.html', ctx)
@@ -365,16 +357,9 @@ class SpeakingPracticeDeleteView(LoginRequiredMixin, View):
 
 class SpeakingPracticeView(LoginRequiredMixin, View):
     def get(self, request, course_slug, sp_slug):
-        sp = get_object_or_404(SpeakingPractice, slug=sp_slug)
-        prev_sp, next_sp = self.find_prev_and_next(sp)
-        is_solved = SpeakingPracticeSolved.objects.filter(user=request.user, practice=sp).first()
         ctx = {
             'course_slug': course_slug,
             'sp_slug': sp_slug,
-            'sp': sp,
-            'prev_sp': prev_sp,
-            'next_sp': next_sp,
-            'is_solved': is_solved,
             'title': 'SP'
         }
         return render(request, 'courses/speaking_practice.html', ctx)
@@ -390,3 +375,42 @@ class SpeakingPracticeView(LoginRequiredMixin, View):
         next_tp = SpeakingPractice.objects.filter(course=sp.course, difficulty__gte=sp.difficulty).filter(
             id__gt=sp.id).order_by('difficulty', 'id').first()
         return prev_tp, next_tp
+
+
+class TranslationPracticeQuestionView(LoginRequiredMixin, View):
+    def get(self, request, course_slug, tp_slug):
+        tp = get_object_or_404(TranslationPractice, slug=tp_slug)
+        shuffled_choices = [tp.answer, tp.choice_1, tp.choice_2, tp.choice_3]
+        shuffle(shuffled_choices)
+        prev_tp, next_tp = TranslationPracticeView.find_prev_and_next(tp)
+        is_solved = TranslationPracticeSolved.objects.filter(user=request.user, practice=tp).first()
+        ctx = {
+            'course_slug': course_slug,
+            'tp_slug': tp_slug,
+            'tp': tp,
+            'choices': shuffled_choices,
+            'prev_tp': prev_tp,
+            'next_tp': next_tp,
+            'is_solved': is_solved,
+            'title': 'TP'
+        }
+        html_content = render(request, 'courses/translation_practice_question.html', ctx)
+        return HttpResponse(html_content)
+
+
+class SpeakingPracticeQuestionView(LoginRequiredMixin, View):
+    def get(self, request, course_slug, sp_slug):
+        sp = get_object_or_404(SpeakingPractice, slug=sp_slug)
+        prev_sp, next_sp = SpeakingPracticeView.find_prev_and_next(sp)
+        is_solved = SpeakingPracticeSolved.objects.filter(user=request.user, practice=sp).first()
+        ctx = {
+            'course_slug': course_slug,
+            'sp_slug': sp_slug,
+            'sp': sp,
+            'prev_sp': prev_sp,
+            'next_sp': next_sp,
+            'is_solved': is_solved,
+            'title': 'SP'
+        }
+        html_content = render(request, 'courses/speaking_practice_question.html', ctx)
+        return HttpResponse(html_content)

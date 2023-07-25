@@ -47,4 +47,10 @@ urlpatterns = [
     path('<course_slug>/speaking-practice/<sp_slug>/',
          views.SpeakingPracticeView.as_view(),
          name='sp'),
+    path('<course_slug>/translation-practice/<tp_slug>/api/',
+         views.TranslationPracticeQuestionView.as_view(),
+         name='tp-api'),
+    path('<course_slug>/speaking-practice/<sp_slug>/api/',
+         views.SpeakingPracticeQuestionView.as_view(),
+         name='sp-api')
 ]

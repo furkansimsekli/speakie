@@ -1,53 +1,32 @@
 {% extends "base/base.html" %}
 {% block content %}
-    <div class="container">
-        <a type="button" class="btn btn-primary" style="margin-bottom: 20px;" href="{% url 'tp-list' course_slug %}">Go
-            to Practice List</a>
-        {% if is_solved %}
-            <h2><i class="bi bi-check-circle text-success"></i> {{ tp.title }}</h2>
-        {% else %}
-            <h2><i class="bi bi-circle"></i> {{ tp.title }}</h2>
-        {% endif %}
-        <hr>
-
-        {% if tp.difficulty == 1 %}
-            <p><strong>Difficulty:</strong> Easy</p>
-        {% elif tp.difficulty == 2 %}
-            <p><strong>Difficulty:</strong> Intermediate</p>
-        {% elif tp.difficulty == 3 %}
-            <p><strong>Difficulty:</strong> Hard</p>
-        {% endif %}
-
-        <p><strong>Question:</strong> {{ tp.question }}</p>
-        <hr>
-        <form action="{% url 'tp' tp.course.slug tp.slug %}" method="POST">
-            {% csrf_token %}
-
-            <!-- Multiple choice options -->
-            {% for choice in choices %}
-                <div class="form-check mb-4">
-                    <input class="form-check-input" type="radio" name="answer" id="choice{{ forloop.counter }}"
-                           value="{{ choice }}">
-                    <label class="form-check-label" for="choice{{ forloop.counter }}">{{ choice }}</label>
-                </div>
-            {% endfor %}
-
-            <!-- Submit button -->
-            <button type="submit" class="btn btn-primary btn-block mb-4">Submit</button>
-        </form>
-
-        {% if prev_tp %}
-            <a href="{% url 'tp' course_slug=course_slug tp_slug=prev_tp.slug %}"
-               class="btn btn-primary mb-4">Previous</a>
-        {% else %}
-            <button class="btn btn-primary mb-4" disabled>Previous</button>
-        {% endif %}
-
-        {% if next_tp %}
-            <a href="{% url 'tp' course_slug=course_slug tp_slug=next_tp.slug %}" class="btn btn-primary mb-4">Next</a>
-        {% else %}
-            <button class="btn btn-primary mb-4" disabled>Next</button>
-        {% endif %}
+    <a type="button" class="btn btn-primary" style="margin-bottom: 20px;" href="{% url 'tp-list' course_slug %}">Go
+        to Practice List</a>
+    <div id="question-container" class="container">
+        {% block question_content %}{% endblock %}
     </div>
 
+    <script>
+        $(document).ready(function () {
+            let initialUrl = "{% url 'tp' course_slug=course_slug tp_slug=tp_slug %}api/";
+            loadPageContent(initialUrl);
+        });
+
+        function loadPageContent(url) {
+            $.ajax({
+                type: "GET",
+                url: url,
+                success: function (response) {
+                    let container = $("#question-container");
+                    container.html(response);
+
+                    let newUrl = url.replace("/api", "");
+                    window.history.replaceState({path: newUrl}, "", newUrl);
+                },
+                error: function () {
+                    alert("An error occurred. Please try again.");
+                }
+            });
+        }
+    </script>
 {% endblock content %}
