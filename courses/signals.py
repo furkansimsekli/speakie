@@ -3,8 +3,10 @@ from django.dispatch import receiver
 from django.utils.text import slugify
 from unidecode import unidecode
 
+from .models import Course, TranslationPractice, SpeakingPractice
 
-@receiver(pre_save)
+
+@receiver(pre_save, sender=(Course, TranslationPractice, SpeakingPractice))
 def change_slug(sender, instance, **kwargs):
     try:
         obj = sender.objects.get(pk=instance.pk)
