@@ -8,7 +8,7 @@
 
     <script>
         $(document).ready(function () {
-            let initialUrl = "{% url 'tp' course_slug=course_slug tp_slug=tp_slug %}api/";
+            let initialUrl = "{% url 'tp-question' course_slug=course_slug tp_slug=tp_slug %}";
             loadPageContent(initialUrl);
         });
 

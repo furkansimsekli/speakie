@@ -49,8 +49,8 @@ urlpatterns = [
          name='sp'),
     path('<course_slug>/translation-practice/<tp_slug>/api/',
          views.TranslationPracticeQuestionView.as_view(),
-         name='tp-api'),
+         name='tp-question'),
     path('<course_slug>/speaking-practice/<sp_slug>/api/',
          views.SpeakingPracticeQuestionView.as_view(),
-         name='sp-api')
+         name='sp-question')
 ]

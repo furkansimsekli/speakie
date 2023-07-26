@@ -1,7 +1,9 @@
 {% extends "base/base.html" %}
 {% block content %}
+    <a type="button" class="btn btn-primary" style="margin: 20px;" href="{% url 'practice-category' course_slug %}">Go
+        back to categories</a>
     {% if user.is_moderator %}
-        <a type="button" class="btn btn-primary" style="margin: 20px;" href="{% url 'tp-create' course_slug %}">New
+        <a type="button" class="btn btn-success" style="margin: 20px;" href="{% url 'tp-create' course_slug %}">New
             Practice</a>
     {% endif %}
     <div class="container">
@@ -27,7 +29,7 @@
                             <p>Difficulty: Hard</p>
                         {% endif %}
 
-                        <a href="{% url 'tp' p.tp.course.slug p.tp.slug %}" class="btn btn-primary">Start Practice</a>
+                        <a href="{% url 'tp' p.tp.course.slug p.tp.slug %}" class="btn btn-warning">Start Practice</a>
                         {% if user.is_moderator %}
                             <a href="{% url 'tp-update' p.tp.course.slug p.tp.slug %}"
                                class="btn btn-secondary">Update</a>

@@ -6,7 +6,9 @@ from unidecode import unidecode
 from .models import Course, TranslationPractice, SpeakingPractice
 
 
-@receiver(pre_save, sender=(Course, TranslationPractice, SpeakingPractice))
+@receiver(pre_save, sender=Course)
+@receiver(pre_save, sender=TranslationPractice)
+@receiver(pre_save, sender=SpeakingPractice)
 def change_slug(sender, instance, **kwargs):
     try:
         obj = sender.objects.get(pk=instance.pk)

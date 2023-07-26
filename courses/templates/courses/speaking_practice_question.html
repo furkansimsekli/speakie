@@ -43,14 +43,14 @@
 
     {% if prev_sp %}
         $(document).on("click", "#prev-button", function () {
-            let prevUrl = "{% url 'sp' course_slug=course_slug sp_slug=prev_sp.slug %}api/";
+            let prevUrl = "{% url 'sp-question' course_slug=course_slug sp_slug=prev_sp.slug %}";
             loadPageContent(prevUrl);
         });
     {% endif %}
 
     {% if next_sp %}
         $(document).on("click", "#next-button", function () {
-            let nextUrl = "{% url 'sp' course_slug=course_slug sp_slug=next_sp.slug %}api/";
+            let nextUrl = "{% url 'sp-question' course_slug=course_slug sp_slug=next_sp.slug %}";
             loadPageContent(nextUrl);
         });
     {% endif %}

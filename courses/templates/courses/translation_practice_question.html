@@ -47,14 +47,14 @@
 
     {% if prev_tp %}
         $(document).on("click", "#prev-button", function () {
-            let prevUrl = "{% url 'tp' course_slug=course_slug tp_slug=prev_tp.slug %}api/";
+            let prevUrl = "{% url 'tp-question' course_slug=course_slug tp_slug=prev_tp.slug %}";
             loadPageContent(prevUrl);
         });
     {% endif %}
 
     {% if next_tp %}
         $(document).on("click", "#next-button", function () {
-            let nextUrl = "{% url 'tp' course_slug=course_slug tp_slug=next_tp.slug %}api/";
+            let nextUrl = "{% url 'tp-question' course_slug=course_slug tp_slug=next_tp.slug %}";
             loadPageContent(nextUrl);
         });
     {% endif %}
