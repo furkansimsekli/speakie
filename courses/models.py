@@ -15,6 +15,7 @@ class Course(models.Model):
     slug = models.SlugField(max_length=255, unique=True, blank=True, allow_unicode=True)
     description = models.CharField(max_length=255)
     flag_picture = models.ImageField(default='default_flag_pic.jpg', upload_to='flag_pictures/')
+    language_code = models.CharField()
     is_active = models.BooleanField(default=True)
 
     def __str__(self):

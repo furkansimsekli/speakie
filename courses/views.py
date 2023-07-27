@@ -373,6 +373,8 @@ class SpeakingPracticeView(LoginRequiredMixin, View):
         audio_file = utils.save_audio_file(request.body)
         sp = get_object_or_404(SpeakingPractice, slug=sp_slug)
         record = AudioRecord.objects.create(audio_file=audio_file, user=request.user, practice=sp)
+        transcript = utils.speech_to_text(record.audio_file.path, sp.course.language_code)
+        print("Transcript:", transcript)
         return HttpResponse()
 
     @staticmethod

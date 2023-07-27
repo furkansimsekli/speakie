@@ -6,7 +6,7 @@ from .models import Course, TranslationPractice, SpeakingPractice
 class CourseCreateForm(forms.ModelForm):
     class Meta:
         model = Course
-        fields = ['title', 'description', 'flag_picture']
+        fields = ['title', 'description', 'language_code', 'flag_picture']
 
     def clean_title(self):
         return self.cleaned_data['title'].title()
