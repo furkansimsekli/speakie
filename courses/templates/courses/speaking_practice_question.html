@@ -1,3 +1,4 @@
+{% load static %}
 {% if is_solved %}
     <h2><i class="bi bi-check-circle text-success"></i> {{ sp.title }}</h2>
 {% else %}
@@ -14,16 +15,24 @@
     <p>Difficulty: Hard</p>
 {% endif %}
 
-<form action="{% url 'sp' sp.course.slug sp.slug %}" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-
-    <div class="form-outline mb-4">
-        <input type="file" id="answer" name="answer" class="form-control" accept="audio/*"/>
-        <label class="form-label" for="answer">Upload audio file</label>
+<div class="row">
+    <div class="col-md-6 d-flex justify-content-center">
+        <div class="text-center">
+            <button id="record" class="btn btn-primary">Record</button>
+            <button id="stop" class="btn btn-danger" disabled>Stop</button>
+        </div>
     </div>
-
-    <button type="submit" class="btn btn-primary btn-block mb-4">Submit</button>
-</form>
+    <div class="col-md-6 mt-md-0 mt-2">
+        <div id="result-wrapper" class="mt-md-0 mt-2 text-center">
+            <audio id="result" controls>
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+    </div>
+</div>
+<div class="mt-4 text-center">
+    <button id="submit" disabled class="btn btn-success">Submit</button>
+</div>
 
 {% if prev_sp %}
     <button id="prev-button" class="btn btn-primary mb-4">Previous</button>
@@ -55,3 +64,6 @@
         });
     {% endif %}
 </script>
+<script>const endpoint = '{% url "sp" sp.course.slug sp.slug %}'</script>
+<script>const csrf = '{{csrf_token}}';</script>
+<script src="{% static 'courses/js/audio_recorder.js' %}"></script>

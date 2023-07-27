@@ -69,3 +69,12 @@ class SpeakingPracticeSolved(models.Model):
 
     def __str__(self):
         return f'{self.user} - {self.practice}'
+
+
+class AudioRecord(models.Model):
+    audio_file = models.FileField()
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    practice = models.ForeignKey(SpeakingPractice, on_delete=models.DO_NOTHING)
+
+    def __str__(self):
+        return f'{self.user} - {self.practice} - {self.audio_file}'

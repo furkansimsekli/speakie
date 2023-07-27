@@ -3,16 +3,21 @@ from random import shuffle
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.template.loader import render_to_string
 from django.urls import reverse
 from django.views import View
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
-from . import forms
+from . import forms, utils
 from .constants import TRANSLATION_PRACTICE_COEFFICIENT
-from .models import Course, TranslationPractice, SpeakingPractice, TranslationPracticeSolved, SpeakingPracticeSolved
+from .models import (
+    Course,
+    TranslationPractice,
+    SpeakingPractice,
+    TranslationPracticeSolved,
+    SpeakingPracticeSolved,
+    AudioRecord
+)
 
 
 class CourseListView(View):
@@ -365,8 +370,10 @@ class SpeakingPracticeView(LoginRequiredMixin, View):
         return render(request, 'courses/speaking_practice.html', ctx)
 
     def post(self, request, course_slug, sp_slug):
-        # TODO: Implement scoring mechanism
-        return HttpResponse("Work in progress...")
+        audio_file = utils.save_audio_file(request.body)
+        sp = get_object_or_404(SpeakingPractice, slug=sp_slug)
+        record = AudioRecord.objects.create(audio_file=audio_file, user=request.user, practice=sp)
+        return HttpResponse()
 
     @staticmethod
     def find_prev_and_next(sp):
