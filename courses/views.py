@@ -16,7 +16,8 @@ from .models import (
     SpeakingPractice,
     TranslationPracticeSolved,
     SpeakingPracticeSolved,
-    AudioRecord
+    AudioRecord,
+    SpeakingPracticeEvaluation
 )
 
 
@@ -373,35 +374,9 @@ class SpeakingPracticeView(LoginRequiredMixin, View):
         user = request.user
         audio_file = utils.save_audio_file(request.body)
         sp = get_object_or_404(SpeakingPractice, slug=sp_slug)
-        record = AudioRecord.objects.create(audio_file=audio_file, user=user, practice=sp)
-        transcript = utils.speech_to_text(audio_file=record.audio_file.path, language=sp.course.language_code)
-        accuracy = utils.calculate_accuracy(original=sp.paragraph, transcript=transcript)
-        score = int(SPEAKING_PRACTICE_COEFFICIENT * sp.difficulty * accuracy)
-
-        # TODO: Debug
-        print(transcript)
-        print(accuracy)
-        print(score)
-
-        sp_solved = SpeakingPracticeSolved.objects.filter(user=user, practice=sp).first()
-
-        if accuracy > 0.80:
-            if sp_solved and sp_solved.point < score:
-                sp_solved.point = score
-                sp_solved.save()
-                user.score += score - sp_solved.point
-                user.save()
-                messages.success(request, f'You beat your last score! NEW SCORE: {score}')
-            elif sp_solved and sp_solved.point >= score:
-                messages.warning(request, f'You could not beat your last score! SCORE: {score}')
-            else:
-                SpeakingPracticeSolved.objects.create(user=user, practice=sp, point=score)
-                user.score += score
-                user.save()
-                messages.success(request, f'Nailed it! Score: {score}')
-        else:
-            messages.warning(request, f'Sorry buddy, you are failure.. SCORE: {score}')
-
+        record = AudioRecord.objects.create(audio_file=audio_file, owner=user, practice=sp)
+        SpeakingPracticeEvaluation.objects.create(audio_record=record)
+        messages.success(request, 'Your audio has been submitted! Please refresh the page later to see the results.')
         success_page_url = reverse('sp', kwargs={'course_slug': course_slug, 'sp_slug': sp_slug})
         return JsonResponse({'success': True, 'success_page_url': success_page_url})
 

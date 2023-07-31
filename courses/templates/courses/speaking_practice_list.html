@@ -15,7 +15,7 @@
                     <div class="practice-card"
                          style="border: 1px solid #ccc; border-radius: 5px; margin-bottom: 20px; padding: 20px;">
 
-                        {% if p.is_solved %}
+                        {% if p.is_solved.is_completed %}
                             <h3><i class="bi bi-check-circle text-success"></i> {{ p.sp.title }}</h3>
                         {% else %}
                             <h3><i class="bi bi-circle"></i> {{ p.sp.title }}</h3>
