@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.views import View
 
 from . import forms, utils
-from .constants import TRANSLATION_PRACTICE_COEFFICIENT
+from .constants import TRANSLATION_PRACTICE_COEFFICIENT, SPEAKING_PRACTICE_COEFFICIENT
 from .models import (
     Course,
     TranslationPractice,
@@ -269,7 +269,7 @@ class SpeakingPracticeListView(LoginRequiredMixin, View):
             sp_list.append({'sp': sp, 'is_solved': is_solved})
 
         page = request.GET.get('page', 1)
-        paginator = Paginator(sp_list, per_page=3)
+        paginator = Paginator(sp_list, per_page=10)
         page_object = paginator.get_page(page)
         ctx = {
             'course_slug': course_slug,
@@ -373,8 +373,12 @@ class SpeakingPracticeView(LoginRequiredMixin, View):
         audio_file = utils.save_audio_file(request.body)
         sp = get_object_or_404(SpeakingPractice, slug=sp_slug)
         record = AudioRecord.objects.create(audio_file=audio_file, user=request.user, practice=sp)
-        transcript = utils.speech_to_text(record.audio_file.path, sp.course.language_code)
-        print("Transcript:", transcript)
+        transcript = utils.speech_to_text(audio_file=record.audio_file.path, language=sp.course.language_code)
+        print(transcript)
+        accuracy = utils.calculate_accuracy(original=sp.paragraph, transcript=transcript)
+        print(accuracy)
+        score = int(SPEAKING_PRACTICE_COEFFICIENT * sp.difficulty * accuracy)
+        print(score)
         return HttpResponse()
 
     @staticmethod
