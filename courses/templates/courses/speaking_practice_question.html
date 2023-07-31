@@ -1,6 +1,6 @@
 {% load static %}
 {% if is_solved %}
-    <h2><i class="bi bi-check-circle text-success"></i> {{ sp.title }}</h2>
+    <h2><i class="bi bi-check-circle text-success"></i> {{ is_solved.point }} | {{ sp.title }}</h2>
 {% else %}
     <h2><i class="bi bi-circle"></i> {{ sp.title }}</h2>
 {% endif %}

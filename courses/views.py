@@ -3,7 +3,7 @@ from random import shuffle
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views import View
@@ -370,16 +370,40 @@ class SpeakingPracticeView(LoginRequiredMixin, View):
         return render(request, 'courses/speaking_practice.html', ctx)
 
     def post(self, request, course_slug, sp_slug):
+        user = request.user
         audio_file = utils.save_audio_file(request.body)
         sp = get_object_or_404(SpeakingPractice, slug=sp_slug)
-        record = AudioRecord.objects.create(audio_file=audio_file, user=request.user, practice=sp)
+        record = AudioRecord.objects.create(audio_file=audio_file, user=user, practice=sp)
         transcript = utils.speech_to_text(audio_file=record.audio_file.path, language=sp.course.language_code)
-        print(transcript)
         accuracy = utils.calculate_accuracy(original=sp.paragraph, transcript=transcript)
-        print(accuracy)
         score = int(SPEAKING_PRACTICE_COEFFICIENT * sp.difficulty * accuracy)
+
+        # TODO: Debug
+        print(transcript)
+        print(accuracy)
         print(score)
-        return HttpResponse()
+
+        sp_solved = SpeakingPracticeSolved.objects.filter(user=user, practice=sp).first()
+
+        if accuracy > 0.80:
+            if sp_solved and sp_solved.point < score:
+                sp_solved.point = score
+                sp_solved.save()
+                user.score += score - sp_solved.point
+                user.save()
+                messages.success(request, f'You beat your last score! NEW SCORE: {score}')
+            elif sp_solved and sp_solved.point >= score:
+                messages.warning(request, f'You could not beat your last score! SCORE: {score}')
+            else:
+                SpeakingPracticeSolved.objects.create(user=user, practice=sp, point=score)
+                user.score += score
+                user.save()
+                messages.success(request, f'Nailed it! Score: {score}')
+        else:
+            messages.warning(request, f'Sorry buddy, you are failure.. SCORE: {score}')
+
+        success_page_url = reverse('sp', kwargs={'course_slug': course_slug, 'sp_slug': sp_slug})
+        return JsonResponse({'success': True, 'success_page_url': success_page_url})
 
     @staticmethod
     def find_prev_and_next(sp):

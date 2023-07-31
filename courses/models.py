@@ -64,6 +64,7 @@ class TranslationPracticeSolved(models.Model):
 class SpeakingPracticeSolved(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     practice = models.ForeignKey(SpeakingPractice, on_delete=models.CASCADE)
+    point = models.IntegerField(default=0)
 
     class Meta:
         unique_together = ('user', 'practice')
@@ -74,8 +75,8 @@ class SpeakingPracticeSolved(models.Model):
 
 class AudioRecord(models.Model):
     audio_file = models.FileField()
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    practice = models.ForeignKey(SpeakingPractice, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    practice = models.ForeignKey(SpeakingPractice, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.user} - {self.practice} - {self.audio_file}'

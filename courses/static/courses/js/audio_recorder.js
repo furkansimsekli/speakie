@@ -27,8 +27,14 @@ stopButton.addEventListener('click', async () => {
 });
 
 submitButton.addEventListener('click', () => {
-    submit();
-    submitButton.disabled = true
+    submit().then(response => {
+        if (response.success) {
+            window.location.href = response.success_page_url;
+        } else {
+            alert('Something went wrong!');
+        }
+    });
+    submitButton.disabled = true;
 });
 
 const recordAudio = () => new Promise(async resolve => {
@@ -61,22 +67,30 @@ const recordAudio = () => new Promise(async resolve => {
 });
 
 const submit = () => {
-    const reader = new FileReader();
-    reader.readAsDataURL(audio.audioBlob);
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(audio.audioBlob);
 
-    reader.onload = () => {
-        const base64AudioMessage = reader.result.split(',')[1];
+        reader.onload = async () => {
+            const base64AudioMessage = reader.result.split(',')[1];
 
-        fetch(endpoint, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json', 'X-CSRFToken': csrf},
-            body: JSON.stringify({audio: base64AudioMessage})
-        }).then(res => {
-            if (res.status === 200) {
-                alert('Successfully sent!')
-            } else {
-                alert('Something went wrong!')
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json', 'X-CSRFToken': csrf},
+                    body: JSON.stringify({audio: base64AudioMessage})
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const responseData = await response.json();
+                resolve(responseData);
+            } catch (error) {
+                reject(error);
             }
-        });
-    };
-}
+        };
+    });
+};
+
