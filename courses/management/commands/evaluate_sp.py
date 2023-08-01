@@ -29,8 +29,8 @@ class Command(BaseCommand):
                 if accuracy >= 0.80:
                     sp_solved.is_completed = True
 
-                sp_solved.point = score
                 user.score += score - sp_solved.point
+                sp_solved.point = score
                 sp_solved.save()
                 user.save()
 
