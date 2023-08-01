@@ -1,9 +1,29 @@
 {% extends "base/base.html" %}
+{% load static %}
 {% block content %}
     <a type="button" class="btn btn-primary" style="margin-bottom: 20px;" href="{% url 'sp-list' course_slug %}">Go
         to Practice List</a>
     <div id="question-container" class="container">
         {% block question_content %}{% endblock %}
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 d-flex justify-content-center">
+            <div class="text-center">
+                <button id="record" class="btn btn-primary">Record</button>
+                <button id="stop" class="btn btn-danger" disabled>Stop</button>
+            </div>
+        </div>
+        <div class="col-md-6 mt-md-0 mt-2">
+            <div id="result-wrapper" class="mt-md-0 mt-2 text-center">
+                <audio id="result" controls>
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+        </div>
+    </div>
+    <div class="mt-4 text-center">
+        <button id="submit" disabled class="btn btn-success">Submit</button>
     </div>
 
     <script>
@@ -18,6 +38,7 @@
                 url: url,
                 success: function (response) {
                     let container = $("#question-container");
+                    container.empty()
                     container.html(response);
 
                     let newUrl = url.replace("/api", "");
@@ -29,4 +50,5 @@
             });
         }
     </script>
+    <script src="{% static 'courses/js/audio_recorder.js' %}"></script>
 {% endblock content %}

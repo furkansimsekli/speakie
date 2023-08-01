@@ -1,10 +1,21 @@
-{% load static %}
+{% if prev_sp %}
+    <button id="prev-button" class="btn btn-info mb-4">Previous</button>
+{% else %}
+    <button class="btn btn-info mb-4" disabled>Previous</button>
+{% endif %}
+
+{% if next_sp %}
+    <button id="next-button" class="btn btn-info mb-4">Next</button>
+{% else %}
+    <button class="btn btn-info mb-4" disabled>Next</button>
+{% endif %}
+
 {% if is_solved.is_completed %}
     <h2><i class="bi bi-check-circle text-success"></i> {{ is_solved.point }} | {{ sp.title }}</h2>
 {% elif not is_solved %}
     <h2><i class="bi bi-circle"></i> {{ sp.title }}</h2>
 {% else %}
-    <h2><i class="bi bi-circle"></i> {{ is_solved.point }} |  {{ sp.title }}</h2>
+    <h2><i class="bi bi-circle"></i> {{ is_solved.point }} | {{ sp.title }}</h2>
 {% endif %}
 <hr>
 
@@ -15,37 +26,6 @@
     <p>Difficulty: Intermediate</p>
 {% elif sp.difficulty == 3 %}
     <p>Difficulty: Hard</p>
-{% endif %}
-
-<div class="row">
-    <div class="col-md-6 d-flex justify-content-center">
-        <div class="text-center">
-            <button id="record" class="btn btn-primary">Record</button>
-            <button id="stop" class="btn btn-danger" disabled>Stop</button>
-        </div>
-    </div>
-    <div class="col-md-6 mt-md-0 mt-2">
-        <div id="result-wrapper" class="mt-md-0 mt-2 text-center">
-            <audio id="result" controls>
-                Your browser does not support the audio element.
-            </audio>
-        </div>
-    </div>
-</div>
-<div class="mt-4 text-center">
-    <button id="submit" disabled class="btn btn-success">Submit</button>
-</div>
-
-{% if prev_sp %}
-    <button id="prev-button" class="btn btn-primary mb-4">Previous</button>
-{% else %}
-    <button class="btn btn-primary mb-4" disabled>Previous</button>
-{% endif %}
-
-{% if next_sp %}
-    <button id="next-button" class="btn btn-primary mb-4">Next</button>
-{% else %}
-    <button class="btn btn-primary mb-4" disabled>Next</button>
 {% endif %}
 
 <script>
@@ -66,6 +46,5 @@
         });
     {% endif %}
 </script>
-<script>const endpoint = '{% url "sp" sp.course.slug sp.slug %}'</script>
-<script>const csrf = '{{csrf_token}}';</script>
-<script src="{% static 'courses/js/audio_recorder.js' %}"></script>
+<script>endpoint = '{% url "sp" sp.course.slug sp.slug %}'</script>
+<script>csrf = '{{csrf_token}}';</script>
