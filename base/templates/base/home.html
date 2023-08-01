@@ -36,7 +36,7 @@
             background-color: #f5f5f5;
         }
 
-        img {
+        .profile-image {
             width: 50px;
             height: 50px;
             border-radius: 50%;
@@ -65,7 +65,7 @@
                 <tbody>
                 {% for user in leaderboard %}
                     <tr>
-                        <td><img src="{{ user.profile_picture.url }}" alt=""></td>
+                        <td><img class="profile-image" src="{{ user.profile_picture.url }}" alt=""></td>
                         {% if forloop.counter == 1 %}
                             <td style="color: #ffd700"><strong>{{ user.username }}</strong></td>
                         {% elif forloop.counter == 2 %}
