@@ -86,5 +86,18 @@
         </div>
     </div>
 </main>
+
+<script>
+    {% if user.is_authenticated %}
+        let wsProtocol = window.location.protocol === "https:" ? "wss" : "ws";
+        let socket = new WebSocket(wsProtocol + '://' + window.location.host + '/ws/notifications/');
+
+        socket.onmessage = function (event) {
+            let data = JSON.parse(event.data);
+            let notificationMessage = data.message;
+            alert(notificationMessage);
+        };
+    {% endif %}
+</script>
 </body>
 </html>

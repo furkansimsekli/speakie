@@ -1,5 +1,8 @@
 from django.core.management.base import BaseCommand
 
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
 from courses import utils
 from courses.constants import SPEAKING_PRACTICE_COEFFICIENT
 from courses.models import SpeakingPracticeEvaluation, SpeakingPracticeSolved
@@ -31,9 +34,19 @@ class Command(BaseCommand):
 
                 user.score += score - sp_solved.point
                 sp_solved.point = score
-                sp_solved.save()
-                user.save()
+
+            # TODO: move into another function
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                f'user_{user.id}',
+                {
+                    'type': 'notify_user',
+                    'message': f"Your speaking practice submission for '{practice.title}' has been processed. You earned {score} points.",
+                }
+            )
 
             submission.is_done = True
+            sp_solved.save()
+            user.save()
             submission.save()
             self.stdout.write(f'Done!')

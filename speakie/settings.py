@@ -29,6 +29,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,6 +41,8 @@ INSTALLED_APPS = [
     'base.apps.BaseConfig',
     'crispy_forms',
     'crispy_bootstrap4',
+    'channels',
+    'notification.apps.NotificationConfig'
 ]
 
 AUTH_USER_MODEL = 'users.User'
@@ -78,6 +81,17 @@ TEMPLATES = [
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 WSGI_APPLICATION = 'speakie.wsgi.application'
+
+ASGI_APPLICATION = 'speakie.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],  # Use your Redis server configuration here
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
