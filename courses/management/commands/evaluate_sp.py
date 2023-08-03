@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand
+from django.urls import reverse
 
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
@@ -6,6 +7,7 @@ from asgiref.sync import async_to_sync
 from courses import utils
 from courses.constants import SPEAKING_PRACTICE_COEFFICIENT
 from courses.models import SpeakingPracticeEvaluation, SpeakingPracticeSolved
+from notification.models import Notification
 
 
 class Command(BaseCommand):
@@ -36,12 +38,18 @@ class Command(BaseCommand):
                 sp_solved.point = score
 
             # TODO: move into another function
+            message = f'Horayyy! You gained {score} points from "{practice.title}" practice!'
+            course_slug = practice.course.slug
+            sp_slug = practice.slug
+            url = reverse('sp', kwargs={'course_slug': course_slug, 'sp_slug': sp_slug})
+            Notification.objects.create(owner=user, message=message, url=url)
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
                 f'user_{user.id}',
                 {
                     'type': 'notify_user',
-                    'message': f"Your speaking practice submission for '{practice.title}' has been processed. You earned {score} points.",
+                    'message': message,
+                    'url': url
                 }
             )
 
