@@ -26,6 +26,7 @@ urlpatterns = [
     path('', base_views.HomeView.as_view(), name='home'),
     path('about/', base_views.AboutView.as_view(), name='about'),
     path('courses/', include('courses.urls')),
+    path('notifications/', include('notification.urls')),
     path('admin/', admin.site.urls),
     path('register/', user_views.RegisterView.as_view(), name='register'),
     path('login/', user_views.LoginView.as_view(), name='login'),

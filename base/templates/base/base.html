@@ -60,8 +60,8 @@
                     <ul class="dropdown-menu" id="notificationList" aria-labelledby="notificationDropdown">
                         {% for notification in notifications %}
                             <li>
-                                <a class="dropdown-item" href="{{ notification.url }}">{{ notification.message }}</a>
-                            </li>
+                                <a class="dropdown-item" href="{{ notification.url }}"
+                                   data-notification-id="{{ notification.id }}">{{ notification.message }}</a></li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -139,6 +139,28 @@
         function playNotificationSound() {
             notificationSound.play();
         }
+
+        notificationList.addEventListener("click", function (event) {
+            if (event.target.tagName === "A") {
+                event.preventDefault();
+                let notificationId = event.target.getAttribute("data-notification-id");
+                let notificationUrl = event.target.getAttribute("href");
+
+                fetch(`/notifications/${notificationId}/read/`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    }
+                })
+                    .then(response => {
+                        window.location.href = notificationUrl;
+                    })
+                    .catch(error => {
+                        console.error("Error updating notification:", error);
+                    });
+            }
+        });
     {% endif %}
 </script>
 </body>
