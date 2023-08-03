@@ -11,25 +11,29 @@
                         <div class="card-body text-center">
                             <h5 class="card-title">{{ course.title }}</h5>
                             <p class="card-text">{{ course.description }}</p>
-                            <a href="{% url 'practice-category' course.slug %}" class="btn btn-primary md-2">Practices</a>
+                            <a href="{% url 'practice-category' course.slug %}"
+                               class="btn btn-primary md-2">Practices</a>
                             {% if user.is_moderator %}
                                 <a href="{% url 'course-update' course.slug %}"
                                    class="btn btn-secondary md-2">Update</a>
 
-                                <button type="button" class="btn btn-danger m-1" data-toggle="modal"
-                                        data-target="#deleteModal{{ course.id }}">
+                                <button type="button" class="btn btn-danger m-1" data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal{{ course.id }}">
                                     Delete
                                 </button>
 
                                 <!-- DELETE MODAL -->
-                                <div class="modal" id="deleteModal{{ course.id }}">
+                                <div class="modal fade" id="deleteModal{{ course.id }}" tabindex="-1"
+                                     aria-labelledby="deleteModalLabel" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
 
                                             <!-- Modal Header -->
                                             <div class="modal-header">
-                                                <h4 class="modal-title">Delete {{ course.title }}</h4>
-                                                <button type="button" class="close" data-dismiss="modal">&times;
+                                                <h4 class="modal-title" id="deleteModalLabel">
+                                                    Delete {{ course.title }}</h4>
+                                                <button type="button" class="close" data-bs-dismiss="modal"
+                                                        aria-label="Close">&times
                                                 </button>
                                             </div>
 
