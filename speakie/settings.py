@@ -57,7 +57,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'speakie.middleware.ModeratorMiddleware'
+    'speakie.middleware.ModeratorMiddleware',
+    'speakie.middleware.AlreadyLoggedInMiddleware'
 ]
 
 ROOT_URLCONF = 'speakie.urls'
