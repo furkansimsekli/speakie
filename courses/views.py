@@ -3,6 +3,7 @@ from random import shuffle
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
+from django.db.models import Count
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -104,13 +105,13 @@ class CourseDeleteView(LoginRequiredMixin, View):
 
 class PracticeCategoryView(LoginRequiredMixin, View):
     def get(self, request, course_slug):
-        course = get_object_or_404(Course, is_active=True, slug=course_slug)
-        tp_count = len(course.translationpractice_set.all())
-        sp_count = len(course.speakingpractice_set.all())
+        course = Course.objects.filter(is_active=True, slug=course_slug).annotate(
+            tp_count=Count('translationpractice', distinct=True),
+            sp_count=Count('speakingpractice', distinct=True)).first()
         ctx = {
             'course': course,
-            'tp_count': tp_count,
-            'sp_count': sp_count,
+            'tp_count': course.tp_count,
+            'sp_count': course.sp_count,
             'title': 'Categories'
         }
         return render(request, 'courses/practice_category.html', ctx)
