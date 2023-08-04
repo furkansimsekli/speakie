@@ -18,8 +18,12 @@ class RegisterView(View):
 
         if form.is_valid():
             form.save()
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password1']
+            user = authenticate(request, username=email, password=password)
+            login(request, user)
             messages.success(request, 'Yeyyy! You successfully joined to Speakie!')
-            return redirect('login')
+            return redirect('home')
 
         return render(request, 'users/register.html', {'form': form, 'title': 'Join!'})
 
