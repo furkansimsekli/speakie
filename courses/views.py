@@ -3,7 +3,8 @@ from random import shuffle
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
-from django.db.models import Count
+from django.db.models import Count, Avg, Max, Min
+from django.db.models.functions import Round
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -416,6 +417,9 @@ class SpeakingPracticeQuestionView(LoginRequiredMixin, View):
         sp = get_object_or_404(SpeakingPractice, slug=sp_slug)
         prev_sp, next_sp = SpeakingPracticeView.find_prev_and_next(sp)
         is_solved = SpeakingPracticeSolved.objects.filter(user=request.user, practice=sp).first()
+        stats = SpeakingPracticeSolved.objects.filter(practice=sp).aggregate(
+            avg_point=Round(Avg('point'), 2), max_point=Max('point'),
+            min_point=Min('point'))
         ctx = {
             'course_slug': course_slug,
             'sp_slug': sp_slug,
@@ -423,6 +427,7 @@ class SpeakingPracticeQuestionView(LoginRequiredMixin, View):
             'prev_sp': prev_sp,
             'next_sp': next_sp,
             'is_solved': is_solved,
+            'stats': stats,
             'title': 'SP'
         }
         html_content = render(request, 'courses/speaking_practice_question.html', ctx)

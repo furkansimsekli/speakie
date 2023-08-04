@@ -28,6 +28,10 @@
     <p>Difficulty: Hard</p>
 {% endif %}
 
+<p>Minimum Score: {{ stats.min_point }}</p>
+<p>Maximum Score: {{ stats.max_point }}</p>
+<p>Average Score: {{ stats.avg_point }}</p>
+
 <script>
     $(document).off("click", "#prev-button");
     $(document).off("click", "#next-button");
