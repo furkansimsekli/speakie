@@ -4,7 +4,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_list_or_404, get_object_or_404
 from django.views import View
 
-from . import forms
+from . import forms, utils
 from .models import User
 
 
@@ -60,7 +60,8 @@ class LogoutView(View):
 class ProfileView(View):
     def get(self, request):
         form = forms.UserUpdateForm(instance=request.user)
-        return render(request, 'users/profile.html', {'form': form, 'title': 'Profile'})
+        level = utils.calculate_level(request.user.score)
+        return render(request, 'users/profile.html', {'form': form, 'level': level, 'title': 'Profile'})
 
     def post(self, request):
         form = forms.UserUpdateForm(request.POST,

@@ -1,3 +1,5 @@
+from django.db.models import F, IntegerField
+from django.db.models.functions import Log, Ceil
 from django.shortcuts import render
 from django.views import View
 
@@ -10,7 +12,8 @@ class HomeView(View):
         course_count = Course.objects.filter(is_active=True).count()
         tp_count = TranslationPractice.objects.all().count()
         sp_count = SpeakingPractice.objects.all().count()
-        leaderboard = User.objects.all().order_by('-score', 'id')
+        leaderboard = User.objects.annotate(
+            level=Ceil(Log(1.5, F('score') * 0.005 + 1), output_field=IntegerField())).order_by('-score', 'id')
         ctx = {
             'course_count': course_count,
             'tp_count': tp_count,
