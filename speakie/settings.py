@@ -90,9 +90,9 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],  # Use your Redis server configuration here
-        },
-    },
+            'hosts': [('redis', 6379)]
+        }
+    }
 }
 
 # Database
@@ -101,11 +101,11 @@ CHANNEL_LAYERS = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'speakie-db-3',
+        'NAME': 'speakie-db',
         'USER': 'postgres',
         'PASSWORD': 'dummy',
-        'HOST': '127.0.0.1',
-        'PORT': '5433',
+        'HOST': 'db',
+        'PORT': '5432'
     }
 }
 
