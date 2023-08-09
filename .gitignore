@@ -160,5 +160,8 @@ cython_debug/
 .idea/
 
 media/
-sa_speakie.json
 sp-*
+
+# Secrets
+sa_speakie.json
+google_oauth_secret.json

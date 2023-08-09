@@ -32,7 +32,9 @@ urlpatterns = [
     path('login/', user_views.LoginView.as_view(), name='login'),
     path('logout/', user_views.LogoutView.as_view(), name='logout'),
     path('profile/', user_views.ProfileView.as_view(), name='profile'),
-    path('appoint-moderator/', user_views.AppointModeratorView.as_view(), name='appoint-moderator')
+    path('appoint-moderator/', user_views.AppointModeratorView.as_view(), name='appoint-moderator'),
+    path('accounts/social/signup/', user_views.CustomSignupView.as_view(), name='social-signup'),
+    path('accounts/', include('allauth.urls'))
 ]
 
 if settings.DEBUG:

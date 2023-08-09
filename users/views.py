@@ -1,3 +1,4 @@
+from allauth.socialaccount.views import SignupView
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.core.paginator import Paginator
@@ -91,3 +92,15 @@ class AppointModeratorView(View):
         user.save()
         messages.success(request, f'{user.username} has been appointed as moderator!')
         return redirect('appoint-moderator')
+
+
+class CustomSignupView(SignupView):
+    http_method_names = ['get']
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        email: str = self.sociallogin.user.email
+        messages.warning(self.request, f'The account with {email} address is not connected to Google!')
+        return redirect('login')
