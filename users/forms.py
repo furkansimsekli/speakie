@@ -19,3 +19,10 @@ class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'username', 'email', 'profile_picture']
+
+
+class PasswordResetRequestForm(forms.Form):
+    email = forms.EmailField()
+
+class PasswordResetForm(forms.Form):
+    new_password = forms.CharField(label='New Password', widget=forms.PasswordInput)
