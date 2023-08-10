@@ -1,6 +1,7 @@
 from allauth.socialaccount.views import SignupView
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
@@ -56,13 +57,13 @@ class LoginView(View):
         return render(request, 'users/login.html', {'form': form, 'title': 'Login'})
 
 
-class LogoutView(View):
+class LogoutView(LoginRequiredMixin, View):
     def get(self, request):
         logout(request)
         return redirect('home')
 
 
-class ProfileView(View):
+class ProfileView(LoginRequiredMixin, View):
     def get(self, request):
         form = forms.UserUpdateForm(instance=request.user)
         level = utils.calculate_level(request.user.score)
@@ -146,7 +147,7 @@ class PasswordResetView(View):
                           {'form': form, 'uidb64': uidb64, 'token': token, 'title': 'Password Reset'})
 
 
-class AppointModeratorView(View):
+class AppointModeratorView(LoginRequiredMixin, View):
     def get(self, request):
         students = get_list_or_404(User, is_moderator=False)
         page = request.GET.get('page', 1)
