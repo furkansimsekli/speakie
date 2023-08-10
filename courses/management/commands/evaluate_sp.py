@@ -36,6 +36,7 @@ class Command(BaseCommand):
 
                 user.score += score - sp_solved.point
                 sp_solved.point = score
+                sp_solved.transcript = transcript
 
             # TODO: move into another function
             message = f'Horayyy! You gained {score} points from "{practice.title}" practice!'

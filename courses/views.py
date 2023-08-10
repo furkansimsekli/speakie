@@ -416,17 +416,17 @@ class SpeakingPracticeQuestionView(LoginRequiredMixin, View):
     def get(self, request, course_slug, sp_slug):
         sp = get_object_or_404(SpeakingPractice, slug=sp_slug)
         prev_sp, next_sp = SpeakingPracticeView.find_prev_and_next(sp)
-        is_solved = SpeakingPracticeSolved.objects.filter(user=request.user, practice=sp).first()
+        solution = SpeakingPracticeSolved.objects.filter(user=request.user, practice=sp).first()
         stats = SpeakingPracticeSolved.objects.filter(practice=sp).aggregate(
-            avg_point=Round(Avg('point'), 2), max_point=Max('point'),
-            min_point=Min('point'))
+            avg_point=Round(Avg('point', default=0), 2), max_point=Max('point', default=0),
+            min_point=Min('point', default=0))
         ctx = {
             'course_slug': course_slug,
             'sp_slug': sp_slug,
             'sp': sp,
             'prev_sp': prev_sp,
             'next_sp': next_sp,
-            'is_solved': is_solved,
+            'solution': solution,
             'stats': stats,
             'title': 'SP'
         }

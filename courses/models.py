@@ -65,6 +65,7 @@ class SpeakingPracticeSolved(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     practice = models.ForeignKey(SpeakingPractice, on_delete=models.CASCADE)
     point = models.IntegerField(default=0)
+    transcript = models.TextField(default='')
     is_completed = models.BooleanField(default=False)
 
     class Meta:
