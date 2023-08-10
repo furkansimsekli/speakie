@@ -16,8 +16,8 @@ from .models import (
     Course,
     TranslationPractice,
     SpeakingPractice,
-    TranslationPracticeSolved,
-    SpeakingPracticeSolved,
+    TranslationPracticeSolution,
+    SpeakingPracticeSolution,
     AudioRecord,
     SpeakingPracticeEvaluation
 )
@@ -128,7 +128,7 @@ class TranslationPracticeListView(LoginRequiredMixin, View):
         tp_list = []
 
         for tp in translation_practices:
-            is_solved = TranslationPracticeSolved.objects.filter(user=request.user, practice=tp).first()
+            is_solved = TranslationPracticeSolution.objects.filter(user=request.user, practice=tp).first()
             tp_list.append({'tp': tp, 'is_solved': is_solved})
 
         page = request.GET.get('page', 1)
@@ -237,12 +237,12 @@ class TranslationPracticeView(LoginRequiredMixin, View):
         user = request.user
 
         if request.POST.get('answer') == tp.answer:
-            tp_solved = TranslationPracticeSolved.objects.filter(user=user, practice=tp)
+            tp_solved = TranslationPracticeSolution.objects.filter(user=user, practice=tp)
 
             if tp_solved:
                 messages.warning(request, 'You already solved this practice!')
             else:
-                TranslationPracticeSolved.objects.create(user=user, practice=tp)
+                TranslationPracticeSolution.objects.create(user=user, practice=tp)
                 points = tp.difficulty * TRANSLATION_PRACTICE_COEFFICIENT
                 user.score += points
                 user.save()
@@ -268,7 +268,7 @@ class SpeakingPracticeListView(LoginRequiredMixin, View):
         sp_list = []
 
         for sp in speaking_practices:
-            is_solved = SpeakingPracticeSolved.objects.filter(user=request.user, practice=sp).first()
+            is_solved = SpeakingPracticeSolution.objects.filter(user=request.user, practice=sp).first()
             sp_list.append({'sp': sp, 'is_solved': is_solved})
 
         page = request.GET.get('page', 1)
@@ -397,7 +397,7 @@ class TranslationPracticeQuestionView(LoginRequiredMixin, View):
         shuffled_choices = [tp.answer, tp.choice_1, tp.choice_2, tp.choice_3]
         shuffle(shuffled_choices)
         prev_tp, next_tp = TranslationPracticeView.find_prev_and_next(tp)
-        is_solved = TranslationPracticeSolved.objects.filter(user=request.user, practice=tp).first()
+        is_solved = TranslationPracticeSolution.objects.filter(user=request.user, practice=tp).first()
         ctx = {
             'course_slug': course_slug,
             'tp_slug': tp_slug,
@@ -416,8 +416,8 @@ class SpeakingPracticeQuestionView(LoginRequiredMixin, View):
     def get(self, request, course_slug, sp_slug):
         sp = get_object_or_404(SpeakingPractice, slug=sp_slug)
         prev_sp, next_sp = SpeakingPracticeView.find_prev_and_next(sp)
-        solution = SpeakingPracticeSolved.objects.filter(user=request.user, practice=sp).first()
-        stats = SpeakingPracticeSolved.objects.filter(practice=sp).aggregate(
+        solution = SpeakingPracticeSolution.objects.filter(user=request.user, practice=sp).first()
+        stats = SpeakingPracticeSolution.objects.filter(practice=sp).aggregate(
             avg_point=Round(Avg('point', default=0), 2), max_point=Max('point', default=0),
             min_point=Min('point', default=0))
         ctx = {

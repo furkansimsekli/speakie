@@ -50,9 +50,11 @@ class SpeakingPractice(models.Model):
         return self.title
 
 
-class TranslationPracticeSolved(models.Model):
+class TranslationPracticeSolution(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     practice = models.ForeignKey(TranslationPractice, on_delete=models.CASCADE)
+    score = models.IntegerField(default=0)
+    is_successful = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('user', 'practice')
@@ -61,12 +63,12 @@ class TranslationPracticeSolved(models.Model):
         return f'{self.user} - {self.practice}'
 
 
-class SpeakingPracticeSolved(models.Model):
+class SpeakingPracticeSolution(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     practice = models.ForeignKey(SpeakingPractice, on_delete=models.CASCADE)
-    point = models.IntegerField(default=0)
+    score = models.IntegerField(default=0)
     transcript = models.TextField(default='')
-    is_completed = models.BooleanField(default=False)
+    is_successful = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('user', 'practice')
@@ -86,7 +88,7 @@ class AudioRecord(models.Model):
 
 class SpeakingPracticeEvaluation(models.Model):
     audio_record = models.ForeignKey(AudioRecord, on_delete=models.CASCADE)
-    is_done = models.BooleanField(default=False)
+    is_completed = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.audio_record} evaluated: {self.is_done}'
+        return f'{self.audio_record} evaluated: {self.is_completed}'
