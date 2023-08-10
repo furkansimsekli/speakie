@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users.apps.UsersConfig',
-    'courses.apps.CoursesConfig',
+    'user.apps.UserConfig',
+    'course.apps.CourseConfig',
     'base.apps.BaseConfig',
     'crispy_forms',
     'crispy_bootstrap4',
@@ -64,14 +64,14 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-SOCIALACCOUNT_ADAPTER = 'users.adapters.CustomSocialAccountAdapter'
+SOCIALACCOUNT_ADAPTER = 'user.adapters.CustomSocialAccountAdapter'
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'user.User'
 
 AUTHENTICATION_BACKENDS = [
-    'users.backends.EmailBackend',
+    'user.backends.EmailBackend',
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend'
 ]

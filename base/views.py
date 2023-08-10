@@ -3,8 +3,8 @@ from django.db.models.functions import Log, Ceil
 from django.shortcuts import render
 from django.views import View
 
-from courses.models import Course, TranslationPractice, SpeakingPractice
-from users.models import User
+from course.models import Course, TranslationPractice, SpeakingPractice
+from user.models import User
 
 
 class HomeView(View):

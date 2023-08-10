@@ -20,12 +20,12 @@ from django.conf.urls.static import static
 from django.urls import path, include
 
 from base import views as base_views
-from users import views as user_views
+from user import views as user_views
 
 urlpatterns = [
     path('', base_views.HomeView.as_view(), name='home'),
     path('about/', base_views.AboutView.as_view(), name='about'),
-    path('courses/', include('courses.urls')),
+    path('course/', include('course.urls')),
     path('notifications/', include('notification.urls')),
     path('admin/', admin.site.urls),
     path('register/', user_views.RegisterView.as_view(), name='register'),
