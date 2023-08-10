@@ -64,6 +64,8 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+SOCIALACCOUNT_ADAPTER = 'users.adapters.CustomSocialAccountAdapter'
+
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
 AUTH_USER_MODEL = 'users.User'
