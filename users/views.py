@@ -149,7 +149,7 @@ class PasswordResetView(View):
 
 class AppointModeratorView(LoginRequiredMixin, View):
     def get(self, request):
-        students = get_list_or_404(User, is_moderator=False)
+        students = User.objects.filter(is_moderator=False)
         page = request.GET.get('page', 1)
         paginator = Paginator(students, per_page=10)
         page_object = paginator.get_page(page)
@@ -157,7 +157,7 @@ class AppointModeratorView(LoginRequiredMixin, View):
 
     def post(self, request):
         new_mod_id = request.POST.get('new_mod_id')
-        user = get_object_or_404(User, id=new_mod_id)
+        user = User.objects.filter(id=new_mod_id)
         user.is_moderator = True
         user.save()
         messages.success(request, f'{user.username} has been appointed as moderator!')
