@@ -11,7 +11,7 @@ from django.urls import reverse
 from django.views import View
 
 from . import forms, utils
-from .constants import TRANSLATION_PRACTICE_COEFFICIENT, SPEAKING_PRACTICE_COEFFICIENT
+from .constants import TRANSLATION_PRACTICE_COEFFICIENT
 from .models import (
     Course,
     TranslationPractice,
@@ -252,14 +252,6 @@ class TranslationPracticeView(LoginRequiredMixin, View):
 
         return redirect(reverse('tp', kwargs={'course_slug': course_slug, 'tp_slug': tp_slug}))
 
-    @staticmethod
-    def find_prev_and_next(tp):
-        prev_tp = TranslationPractice.objects.filter(course=tp.course, difficulty__lte=tp.difficulty).filter(
-            id__lt=tp.id).order_by('-difficulty', '-id').first()
-        next_tp = TranslationPractice.objects.filter(course=tp.course, difficulty__gte=tp.difficulty).filter(
-            id__gt=tp.id).order_by('difficulty', 'id').first()
-        return prev_tp, next_tp
-
 
 class SpeakingPracticeListView(LoginRequiredMixin, View):
     def get(self, request, course_slug):
@@ -382,21 +374,13 @@ class SpeakingPracticeView(LoginRequiredMixin, View):
         success_page_url = reverse('sp', kwargs={'course_slug': course_slug, 'sp_slug': sp_slug})
         return JsonResponse({'success': True, 'success_page_url': success_page_url})
 
-    @staticmethod
-    def find_prev_and_next(sp):
-        prev_tp = SpeakingPractice.objects.filter(course=sp.course, difficulty__lte=sp.difficulty).filter(
-            id__lt=sp.id).order_by('-difficulty', '-id').first()
-        next_tp = SpeakingPractice.objects.filter(course=sp.course, difficulty__gte=sp.difficulty).filter(
-            id__gt=sp.id).order_by('difficulty', 'id').first()
-        return prev_tp, next_tp
-
 
 class TranslationPracticeQuestionView(LoginRequiredMixin, View):
     def get(self, request, course_slug, tp_slug):
         tp = get_object_or_404(TranslationPractice, slug=tp_slug)
         shuffled_choices = [tp.answer, tp.choice_1, tp.choice_2, tp.choice_3]
         shuffle(shuffled_choices)
-        prev_tp, next_tp = TranslationPracticeView.find_prev_and_next(tp)
+        prev_tp, next_tp = utils.find_prev_and_next_practice(tp)
         is_solved = TranslationPracticeSolved.objects.filter(user=request.user, practice=tp).first()
         ctx = {
             'course_slug': course_slug,
@@ -415,7 +399,7 @@ class TranslationPracticeQuestionView(LoginRequiredMixin, View):
 class SpeakingPracticeQuestionView(LoginRequiredMixin, View):
     def get(self, request, course_slug, sp_slug):
         sp = get_object_or_404(SpeakingPractice, slug=sp_slug)
-        prev_sp, next_sp = SpeakingPracticeView.find_prev_and_next(sp)
+        prev_sp, next_sp = utils.find_prev_and_next_practice(sp)
         solution = SpeakingPracticeSolved.objects.filter(user=request.user, practice=sp).first()
         stats = SpeakingPracticeSolved.objects.filter(practice=sp).aggregate(
             avg_point=Round(Avg('point', default=0), 2), max_point=Max('point', default=0),

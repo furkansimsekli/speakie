@@ -2,12 +2,15 @@ import base64
 import io
 import json
 import uuid
+from typing import Any
 
 from django.conf import settings
+from django.db.models import Q
 from google.cloud import speech_v1p1beta1 as speech
 from google.oauth2 import service_account
 
 from . import constants
+from .models import TranslationPractice, SpeakingPractice
 
 
 def save_audio_file(body) -> str:
@@ -90,3 +93,14 @@ def calculate_accuracy(original: str, transcript: str) -> float:
     length = len(n_original)
     penalty = levenshtein(n_original, n_transcript)
     return (length - penalty) / length
+
+
+def find_prev_and_next_practice(practice: [TranslationPractice, SpeakingPractice]) -> tuple[Any, Any]:
+    # TODO: better return annotation
+    prev_p = practice.__class__.objects.filter(Q(difficulty=practice.difficulty, id__lt=practice.id) |
+                                               Q(difficulty__lt=practice.difficulty)).order_by('-difficulty',
+                                                                                               '-id').first()
+    next_p = practice.__class__.objects.filter(Q(difficulty=practice.difficulty, id__gt=practice.id) |
+                                               Q(difficulty__gt=practice.difficulty)).order_by('difficulty',
+                                                                                               'id').first()
+    return prev_p, next_p
