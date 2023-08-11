@@ -1,0 +1,47 @@
+[
+    {
+        "title": "English",
+        "description": "What up yo!",
+        "language_code": "en-US"
+    },
+    {
+        "title": "Turkish",
+        "description": "Ne mutlu Türküm diyene!",
+        "language_code": "tr-TR"
+    },
+    {
+        "title": "Spanish",
+        "description": "¡Qué alegría ser español!",
+        "language_code": "es-ES"
+    },
+    {
+        "title": "French",
+        "description": "Ligue 1 is a farmer league!",
+        "language_code": "fr-FR"
+    },
+    {
+        "title": "German",
+        "description": "Haben Sie Intresse für Deutsch?",
+        "language_code": "de-DE"
+    },
+    {
+        "title": "Japanese",
+        "description": "ありがとう",
+        "language_code": "ja-JP"
+    },
+    {
+        "title": "Persian",
+        "description": "shekarchi, madanchi, amade",
+        "language_code": "fa-IR"
+    },
+    {
+        "title": "Russian",
+        "description": "Как хорошо быть русским!",
+        "language_code": "ru-RU"
+    },
+    {
+        "title": "Italian",
+        "description": "Che felicità essere italiani!",
+        "language_code": "it-IT"
+    }
+]
