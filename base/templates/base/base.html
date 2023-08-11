@@ -118,11 +118,13 @@
             let data = JSON.parse(event.data);
             let message = data.message;
             let url = data.url;
+            let dataId = data.data_id
             let listItem = document.createElement("li");
             let link = document.createElement("a");
 
             link.setAttribute("class", "dropdown-item");
             link.setAttribute("href", url);
+            link.setAttribute("data-notification-id", dataId)
             link.innerText = message;
             listItem.appendChild(link);
             notificationList.insertBefore(listItem, notificationList.firstChild);

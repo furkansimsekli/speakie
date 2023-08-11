@@ -23,4 +23,5 @@ class NotificationsConsumer(AsyncWebsocketConsumer):
     async def notify_user(self, event):
         message = event['message']
         url = event['url']
-        await self.send(text_data=json.dumps({'message': message, 'url': url}))
+        data_id = event['data_id']
+        await self.send(text_data=json.dumps({'message': message, 'url': url, 'data_id': data_id}))

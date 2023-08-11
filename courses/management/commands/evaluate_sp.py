@@ -38,24 +38,28 @@ class Command(BaseCommand):
                 sp_solved.point = score
                 sp_solved.transcript = transcript
 
-            # TODO: move into another function
-            message = f'Horayyy! You gained {score} points from "{practice.title}" practice!'
-            course_slug = practice.course.slug
-            sp_slug = practice.slug
-            url = reverse('sp', kwargs={'course_slug': course_slug, 'sp_slug': sp_slug})
-            Notification.objects.create(owner=user, message=message, url=url)
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)(
-                f'user_{user.id}',
-                {
-                    'type': 'notify_user',
-                    'message': message,
-                    'url': url
-                }
-            )
+            notify_user(score, practice, user)
 
             submission.is_done = True
             sp_solved.save()
             user.save()
             submission.save()
             self.stdout.write(f'Done!')
+
+
+def notify_user(score, practice, user):
+    message = f'Horayyy! You gained {score} points from "{practice.title}" practice!'
+    course_slug = practice.course.slug
+    sp_slug = practice.slug
+    url = reverse('sp', kwargs={'course_slug': course_slug, 'sp_slug': sp_slug})
+    notification = Notification.objects.create(owner=user, message=message, url=url)
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        f'user_{user.id}',
+        {
+            'type': 'notify_user',
+            'message': message,
+            'url': url,
+            'data_id': notification.id
+        }
+    )
