@@ -17,23 +17,29 @@
 {% else %}
     <h2><i class="bi bi-circle"></i> {{ solution.point }} | {{ sp.title }}</h2>
 {% endif %}
+
+<div class="mt-3">
+    {% if sp.difficulty == 1 %}
+        <p><strong>Difficulty:</strong> Easy</p>
+    {% elif sp.difficulty == 2 %}
+        <p><strong>Difficulty:</strong> Intermediate</p>
+    {% elif sp.difficulty == 3 %}
+        <p><strong>Difficulty:</strong> Hard</p>
+    {% endif %}
+
+    <p><strong>Minimum Score:</strong> {{ stats.min_point }}</p>
+    <p><strong>Maximum Score:</strong> {{ stats.max_point }}</p>
+    <p><strong>Average Score:</strong> {{ stats.avg_point }}</p>
+</div>
 <hr>
 
-<p>{{ sp.paragraph }}</p>
-{% if sp.difficulty == 1 %}
-    <p>Difficulty: Easy</p>
-{% elif sp.difficulty == 2 %}
-    <p>Difficulty: Intermediate</p>
-{% elif sp.difficulty == 3 %}
-    <p>Difficulty: Hard</p>
-{% endif %}
-
-<p>Minimum Score: {{ stats.min_point }}</p>
-<p>Maximum Score: {{ stats.max_point }}</p>
-<p>Average Score: {{ stats.avg_point }}</p>
+<div>
+    <p>{{ sp.paragraph }}</p>
+</div>
 
 {% if solution %}
-    <h3>Your highest scored speech:</h3>
+    <hr>
+    <h3>Your Highest Scored Speech:</h3>
     <p>{{ solution.transcript }}</p>
 {% endif %}
 
