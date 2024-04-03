@@ -1,7 +1,7 @@
 crispy-bootstrap4==2022.1
 channels[daphne]==4.0.0
 channels-redis==4.1.0
-Django==4.2.4
+Django==4.2.11
 django-allauth==0.54.0
 google-cloud-speech==2.21.0
 Pillow==10.0.0
